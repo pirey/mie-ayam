@@ -17,7 +17,7 @@ const Map = withGoogleMap(props => {
     disableDefaultUI: true,
     disableDoubleClickZoom: true,
     zoomControl: true,
-    minZoom: 13,
+    minZoom: 12,
     maxZoom: 20,
     styles: [
       {
@@ -30,13 +30,14 @@ const Map = withGoogleMap(props => {
       },
     ]
   }
+  const defaultCenter = { lat: -7.801394959643029, lng: 110.36470413208008 }
   return (
     <GoogleMap
       ref={onMapLoad}
-      center={center}
+      center={center || defaultCenter}
       onClick={onMapClick}
       defaultZoom={15}
-      defaultCenter={{ lat: -7.801394959643029, lng: 110.36470413208008 }}
+      defaultCenter={defaultCenter}
       defaultOptions={defaultOptions}
     >
       {myLocation && <MyLocation position={myLocation} />}
