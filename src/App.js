@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Map from './Map'
+import { restaurantsRef } from './lib/firebase'
 
 class App extends Component {
   state = {
@@ -11,8 +12,41 @@ class App extends Component {
     super()
     this.handleMapLoad = this.handleMapLoad.bind(this)
     this.handleMapClick = this.handleMapClick.bind(this)
+    this.handleMarkerClick = this.handleMarkerClick.bind(this)
+    this.handleMarkerClose = this.handleMarkerClose.bind(this)
+    this.handleCenterChanged = this.handleCenterChanged.bind(this)
   }
   componentDidMount() {
+    this.getCurrentPosition()
+    this.handleRestaurantData()
+  }
+  handleMarkerClick(targetMarker) {
+    const nextMarkers = this.state.markers.map(m => m === targetMarker ? ({
+      ...m,
+      showInfo: true,
+    }) : m)
+    this.setState({ markers: nextMarkers })
+  }
+  handleMarkerClose(targetMarker) {
+    const nextMarkers = this.state.markers.map(m => m === targetMarker ? ({
+      ...m,
+      showInfo: false,
+    }) : m)
+    this.setState({ markers: nextMarkers })
+  }
+  handleRestaurantData() {
+    restaurantsRef.on('value', (snap) => {
+      const restaurants = snap.val()
+      const markers = Object.keys(restaurants).map(id => ({
+        showInfo: false,
+        position: restaurants[id].latLng,
+        nama: restaurants[id].nama,
+        harga: restaurants[id].harga,
+      }))
+      this.setState({ markers })
+    })
+  }
+  getCurrentPosition() {
     if ('geolocation' in navigator) {
       const handleCurrentPosition = (position) => {
         const { latitude: lat, longitude: lng } = position.coords
@@ -31,12 +65,11 @@ class App extends Component {
     this._map = map
   }
   handleMapClick({ latLng }) {
-    const nextMarkers = [
-      ...this.state.markers,
-      { position: latLng, },
-    ]
+    console.log(latLng.lat(), latLng.lng())
+  }
+  handleCenterChanged() {
     this.setState({
-      markers: nextMarkers,
+      center: this._map.getCenter(),
     })
   }
   render() {
@@ -50,6 +83,9 @@ class App extends Component {
         mapElement={container}
         onMapLoad={this.handleMapLoad}
         onMapClick={this.handleMapClick}
+        onCenterChanged={this.handleCenterChanged}
+        onMarkerClick={this.handleMarkerClick}
+        onMarkerClose={this.handleMarkerClose}
       />
     )
   }
