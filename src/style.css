@@ -3,3 +3,44 @@ html, body, #root {
     height: 100%;
 }
 
+#app-container {
+}
+
+#sidebar {
+    z-index: 100;
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 25%;
+    min-width: 350px;
+    max-width: 100%;
+    height: 100%;
+    background: #fff;
+    transition: all .5s ease;
+
+    margin-bottom: 0;
+    overflow-y: auto;
+    border-radius: 0;
+}
+
+#sidebar.active {
+    left: 0;
+}
+
+#menu-toggler {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 90;
+}
+
+#map-container {
+}
+
+.material-icons.lg {
+    font-size: 48px
+}
+
+.no-pt {
+    padding-top: 0;
+}

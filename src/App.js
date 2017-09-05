@@ -1,12 +1,24 @@
 import React, { Component } from 'react'
 import Map from './Map'
 import { restaurantsRef } from './lib/firebase'
+import Sidebar from './Sidebar'
+
+const MenuIcon = ({ onClick }) => {
+  return (
+    <div id="menu-toggler">
+      <button onClick={onClick} className="btn btn-default">
+        <i className="fa fa-bars fa-lg"></i>
+      </button>
+    </div>
+  )
+}
 
 class App extends Component {
   state = {
     markers: [],
     center: undefined,
     myLocation: undefined,
+    openSidebar: false,
   }
   constructor() {
     super()
@@ -15,10 +27,16 @@ class App extends Component {
     this.handleMarkerClick = this.handleMarkerClick.bind(this)
     this.handleMarkerClose = this.handleMarkerClose.bind(this)
     this.handleCenterChanged = this.handleCenterChanged.bind(this)
+    this.handleToggleSidebar = this.handleToggleSidebar.bind(this)
   }
   componentDidMount() {
     this.getCurrentPosition()
     this.handleRestaurantData()
+  }
+  handleToggleSidebar() {
+    this.setState(prev => ({
+      openSidebar: !prev.openSidebar,
+    }))
   }
   handleMarkerClick(targetMarker) {
     const nextMarkers = this.state.markers.map(m => m === targetMarker ? ({
@@ -73,20 +91,28 @@ class App extends Component {
     })
   }
   render() {
-    const container = <div style={{height: '100%'}} />
+    const fullHeight = { height: '100%' }
+    const mapContainer = <div id="map-container" style={fullHeight} />
+    const mapElement = <div id="map-element" style={fullHeight} />
+
+    const { openSidebar } = this.state
     return (
-      <Map
-        myLocation={this.state.myLocation}
-        center={this.state.center}
-        markers={this.state.markers}
-        containerElement={container}
-        mapElement={container}
-        onMapLoad={this.handleMapLoad}
-        onMapClick={this.handleMapClick}
-        onCenterChanged={this.handleCenterChanged}
-        onMarkerClick={this.handleMarkerClick}
-        onMarkerClose={this.handleMarkerClose}
-      />
+      <div id="app-container" style={fullHeight}>
+        <Sidebar onClose={this.handleToggleSidebar} active={openSidebar} />
+        <MenuIcon onClick={this.handleToggleSidebar} />
+        <Map
+          myLocation={this.state.myLocation}
+          center={this.state.center}
+          markers={this.state.markers}
+          containerElement={mapContainer}
+          mapElement={mapElement}
+          onMapLoad={this.handleMapLoad}
+          onMapClick={this.handleMapClick}
+          onCenterChanged={this.handleCenterChanged}
+          onMarkerClick={this.handleMarkerClick}
+          onMarkerClose={this.handleMarkerClose}
+        />
+      </div>
     )
   }
 }
