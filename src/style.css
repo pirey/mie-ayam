@@ -6,6 +6,18 @@ html, body, #root {
 #app-container {
 }
 
+#detail-info .detail-info-title {
+    margin-top: 0;
+}
+
+#detail-info .detail-info-thumbnail {
+    margin-bottom: 15px;
+}
+
+#detail-info .media-body {
+    padding-top: 25px;
+}
+
 #sidebar {
     z-index: 100;
     position: absolute;
@@ -29,8 +41,8 @@ html, body, #root {
 
 #menu-toggler {
     position: absolute;
-    top: 20px;
-    left: 20px;
+    top: 10px;
+    left: 10px;
     z-index: 90;
 }
 
@@ -43,4 +55,20 @@ html, body, #root {
 
 .no-pt {
     padding-top: 0;
+}
+
+.f24 {
+    font-size: 24px;
+}
+
+.cut {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media all and (max-width: 500px) {
+    #sidebar {
+        width: 100%;
+    }
 }
