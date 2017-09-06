@@ -3,18 +3,36 @@ import Map from './Map'
 import { restaurantsRef } from './lib/firebase'
 import Sidebar from './Sidebar'
 
-const MenuIcon = ({ onClick }) => {
+const MenuButton = ({ mode, onClick, onCancel }) => {
   return (
     <div id="menu-toggler">
-      <button onClick={onClick} className="btn btn-default">
-        <i className="fa fa-bars fa-lg"></i>
-      </button>
+      {
+        mode === 'explore' && <button onClick={onClick} className="btn btn-default">
+          <i className="fa fa-bars fa-lg"></i>
+        </button>
+      }
+      {
+        mode !== 'explore' && <button onClick={onCancel} className="btn btn-default">
+          <i className="fa fa-angle-left fa-lg"></i>
+          &nbsp;&nbsp;Batal
+        </button>
+      }
+    </div>
+  )
+}
+
+const AddLocationButton = ({ onClick }) => {
+  return (
+    <div id="add-location-button">
+      <div onClick={onClick} className="add-location-button-desc">Pilih Lokasi</div>
+      <div className="add-location-button-arrow"></div>
     </div>
   )
 }
 
 class App extends Component {
   state = {
+    mode: 'explore',
     markers: [],
     center: undefined,
     myLocation: undefined,
@@ -28,10 +46,16 @@ class App extends Component {
     this.handleMarkerClose = this.handleMarkerClose.bind(this)
     this.handleCenterChanged = this.handleCenterChanged.bind(this)
     this.handleToggleSidebar = this.handleToggleSidebar.bind(this)
+    this.handleChangeMode = this.handleChangeMode.bind(this)
+    this.handleChooseLocation = this.handleChooseLocation.bind(this)
+    this.handleCancel = this.handleCancel.bind(this)
   }
   componentDidMount() {
     this.getCurrentPosition()
     this.handleRestaurantData()
+  }
+  handleChangeMode(mode) {
+    this.setState({ mode })
   }
   handleToggleSidebar() {
     this.setState(prev => ({
@@ -90,16 +114,25 @@ class App extends Component {
       center: this._map.getCenter(),
     })
   }
+  handleChooseLocation() {
+    this.setState({
+      mode: 'explore',
+    })
+  }
+  handleCancel() {
+    this.setState({ mode: 'explore' })
+  }
   render() {
     const fullHeight = { height: '100%' }
     const mapContainer = <div id="map-container" style={fullHeight} />
     const mapElement = <div id="map-element" style={fullHeight} />
 
-    const { openSidebar } = this.state
+    const { openSidebar, mode } = this.state
     return (
       <div id="app-container" style={fullHeight}>
-        <Sidebar onClose={this.handleToggleSidebar} active={openSidebar} />
-        <MenuIcon onClick={this.handleToggleSidebar} />
+        <Sidebar onChangeMode={this.handleChangeMode} onClose={this.handleToggleSidebar} active={openSidebar} />
+        <MenuButton mode={mode} onCancel={this.handleCancel} onClick={this.handleToggleSidebar} />
+        {mode === 'add' && <AddLocationButton onClick={this.handleChooseLocation} />}
         <Map
           myLocation={this.state.myLocation}
           center={this.state.center}
