@@ -59,7 +59,6 @@ const FormAdd = ({ onSubmit }) => {
         <input className="form-control" />
       </div>
       <div className="clearfix">
-        <label>Menu</label>
         <button className="btn btn-link pull-right no-pt">
           <i className="fa fa-plus"></i>&nbsp;Tambah menu
         </button>
