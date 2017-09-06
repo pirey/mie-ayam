@@ -1,4 +1,5 @@
 import React from 'react'
+import { EXPLORE, ADD_LOCATION, SELECT_LOCATION, DETAIL } from './modes'
 
 const DetailInfo = ({ onClose }) => {
   return (
@@ -118,18 +119,12 @@ const FormAdd = ({ onClose, onSubmit }) => {
   )
 }
 
-const Main = ({ onChangeMode, onClose }) => {
+const Main = ({ onAddLocation, onClose }) => {
   return (
     <div className="panel panel-default">
       <div className="panel-heading">
         <button onClick={onClose} className="close"><span>&times;</span></button>
-        <button
-          className="btn btn-success"
-          onClick={() => {
-            onChangeMode('add')
-            onClose()
-          }}
-        >
+        <button className="btn btn-success" onClick={onAddLocation}>
           <i className="fa fa-plus"></i>
           &nbsp;Daftarkan Tempat Baru
         </button>
@@ -139,29 +134,25 @@ const Main = ({ onChangeMode, onClose }) => {
 }
 
 class Sidebar extends React.Component {
-  isMainView() {
-    return this.props.view === 'main'
+  constructor() {
+    super()
+    this.handleAddLocation = this.handleAddLocation.bind(this)
   }
-  isAddView() {
-    return this.props.view === 'add'
-  }
-  isDetailView() {
-    return this.props.view === 'detail'
+  handleAddLocation() {
+    const { onClose, onChangeMode } = this.props
+    onChangeMode(SELECT_LOCATION)
+    onClose()
   }
   render() {
-    const { active, onClose, onChangeMode } = this.props
+    const { mode, active, onClose } = this.props
     return (
       <div id="sidebar" className={active ? 'active' : ''}>
-        {this.isMainView() && <Main onChangeMode={onChangeMode} onClose={onClose} />}
-        {this.isAddView() && <FormAdd onClose={onClose} onSubmit={e => e.preventDefault()} />}
-        {this.isDetailView() && <DetailInfo onClose={onClose} />}
+        {mode === EXPLORE && <Main onAddLocation={this.handleAddLocation} onClose={onClose} />}
+        {mode === ADD_LOCATION && <FormAdd onClose={onClose} onSubmit={e => e.preventDefault()} />}
+        {mode === DETAIL && <DetailInfo onClose={onClose} />}
       </div>
     )
   }
-}
-
-Sidebar.defaultProps = {
-  view: 'main'
 }
 
 export default Sidebar
