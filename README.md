@@ -1,3 +1,3 @@
-## Info Mie Ayam
+## Mie Ayam
 
-Memudahkan penjelajahan warung mie ayam
+Let us explore the taste of this fantastic culinary
