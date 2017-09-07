@@ -44,6 +44,7 @@ class App extends React.Component {
     this.setState({
       mode: Modes.DETAIL,
       selectedMarker: targetMarker,
+      selectedLocation: undefined,
       isSidebarActive: true,
     })
     // const nextMarkers = this.state.markers.map(m => m === targetMarker ? ({
