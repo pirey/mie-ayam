@@ -3,6 +3,10 @@ html, body, #root {
     height: 100%;
 }
 
+body {
+    font-family: 'Encode Sans Condensed', sans-serif;
+}
+
 #app-container {
 }
 
@@ -110,7 +114,9 @@ html, body, #root {
     text-overflow: ellipsis;
 }
 
-.btn-link:hover {
+.btn-link:hover,
+.btn-link:active,
+.btn-link:focus {
     text-decoration: none;
 }
 

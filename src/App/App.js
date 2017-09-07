@@ -10,6 +10,7 @@ class App extends Component {
   state = {
     mode: Modes.EXPLORE,
     markers: [],
+    selectedMarker: undefined,
     center: undefined,
     myLocation: undefined,
     selectedLocation: undefined,
@@ -40,27 +41,37 @@ class App extends Component {
     }))
   }
   handleMarkerClick(targetMarker) {
-    const nextMarkers = this.state.markers.map(m => m === targetMarker ? ({
-      ...m,
-      showInfo: true,
-    }) : m)
-    this.setState({ markers: nextMarkers })
+    this.setState({
+      mode: Modes.DETAIL,
+      selectedMarker: targetMarker,
+      isSidebarActive: true,
+    })
+    // const nextMarkers = this.state.markers.map(m => m === targetMarker ? ({
+    //   ...m,
+    //   showInfo: true,
+    // }) : m)
+    // this.setState({ markers: nextMarkers })
   }
   handleMarkerClose(targetMarker) {
-    const nextMarkers = this.state.markers.map(m => m === targetMarker ? ({
-      ...m,
-      showInfo: false,
-    }) : m)
-    this.setState({ markers: nextMarkers })
+    // const nextMarkers = this.state.markers.map(m => m === targetMarker ? ({
+    //   ...m,
+    //   showInfo: false,
+    // }) : m)
+    // this.setState({ markers: nextMarkers })
   }
   handleRestaurantData() {
     restaurantsRef.on('value', (snap) => {
       const restaurants = snap.val()
+      const mapMenus = menus => Object.keys(menus).map(id => ({
+        id,
+        name: menus[id].name,
+        price: menus[id].price,
+      }))
       const markers = Object.keys(restaurants).map(id => ({
-        showInfo: false,
+        id,
+        name: restaurants[id].name,
         position: restaurants[id].latLng,
-        nama: restaurants[id].nama,
-        harga: restaurants[id].harga,
+        menus: mapMenus(restaurants[id].menus),
       }))
       this.setState({ markers })
     })
@@ -103,6 +114,7 @@ class App extends Component {
     this.setState({
       mode: Modes.EXPLORE,
       selectedLocation: undefined,
+      isSidebarActive: false,
     })
   }
   render() {
@@ -110,10 +122,10 @@ class App extends Component {
     const mapContainer = <div id="map-container" style={fullHeight} />
     const mapElement = <div id="map-element" style={fullHeight} />
 
-    const { selectedLocation, isSidebarActive, mode, myLocation, center, markers, } = this.state
+    const { selectedLocation, isSidebarActive, mode, myLocation, center, markers, selectedMarker } = this.state
     return (
       <div id="app-container" style={fullHeight}>
-        <Sidebar mode={mode} onResetMode={this.handleResetMode} onChangeMode={this.handleChangeMode} onClose={this.handleToggleSidebar} active={isSidebarActive} />
+        <Sidebar selectedMarker={selectedMarker} mode={mode} onResetMode={this.handleResetMode} onChangeMode={this.handleChangeMode} onClose={this.handleToggleSidebar} active={isSidebarActive} />
         <MenuButton mode={mode} onCancel={this.handleResetMode} onClick={this.handleToggleSidebar} />
         {mode === Modes.SELECT_LOCATION && <SelectLocationButton onClick={this.handleChooseLocation} />}
         <Map

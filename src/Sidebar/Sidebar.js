@@ -15,12 +15,12 @@ class Sidebar extends React.Component {
     onClose()
   }
   render() {
-    const { mode, active, onClose, onResetMode } = this.props
+    const { mode, active, onClose, onResetMode, selectedMarker } = this.props
     return (
       <div id="sidebar" className={active ? 'active' : ''}>
         {mode === Modes.EXPLORE && <Explore onInitSelect={this.handleInitSelect} onClose={onClose} />}
         {mode === Modes.ADD_LOCATION && <AddLocation onClose={onResetMode} onSubmit={e => e.preventDefault()} />}
-        {mode === Modes.DETAIL && <DetailInfo onClose={onClose} />}
+        {mode === Modes.DETAIL && <DetailInfo restaurant={selectedMarker} onClose={onResetMode} />}
       </div>
     )
   }
