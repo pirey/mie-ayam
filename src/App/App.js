@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import Map                  from '../Map/Map'
 import Sidebar              from '../Sidebar/Sidebar'
 import { restaurantsRef }   from '../firebase'
@@ -6,7 +6,7 @@ import * as Modes           from '../modes'
 import MenuButton           from './MenuButton'
 import SelectLocationButton from './SelectLocationButton'
 
-class App extends Component {
+class App extends React.Component {
   state = {
     mode: Modes.EXPLORE,
     markers: [],

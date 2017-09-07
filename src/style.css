@@ -71,7 +71,7 @@ body {
     max-width: 100%;
     height: 100%;
     background: #fff;
-    transition: all .3s ease;
+    transition: all .1s ease;
 
     margin-bottom: 0;
     overflow-y: auto;
@@ -84,6 +84,7 @@ body {
 
 #sidebar .panel {
     border-radius: 0;
+    border: 0;
 }
 
 #menu-toggler {
@@ -120,7 +121,9 @@ body {
 
 .btn-link:hover,
 .btn-link:active,
+.btn-link:active:focus,
 .btn-link:focus {
+    outline: none;
     text-decoration: none;
 }
 

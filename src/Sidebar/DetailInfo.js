@@ -24,10 +24,7 @@ const DetailInfo = ({ restaurant, onClose }) => {
     <div className="panel panel-default">
       <div className="panel-heading">
         <button onClick={onClose} className="btn btn-link btn-lg"><i className="fa fa-chevron-left"></i></button>
-        <div className="btn-group">
-          <button className="btn btn-link btn-lg"><i className="fa fa-pencil"></i></button>
-          <button className="btn btn-link btn-lg"><i className="fa fa-trash"></i></button>
-        </div>
+        <button className="btn btn-link btn-lg"><i className="fa fa-times"></i></button>
       </div>
       <div className="panel-body">
         <div id="detail-info">
