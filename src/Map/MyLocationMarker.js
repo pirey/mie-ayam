@@ -1,8 +1,6 @@
 /* global google */
 import React from 'react'
-import { Marker } from "react-google-maps"
-
-console.log(google.maps.Symbol)
+import { Marker } from 'react-google-maps'
 
 const icon = {
   path: google.maps.SymbolPath.CIRCLE,
@@ -14,10 +12,10 @@ const icon = {
   scale: 7,
 }
 
-const MyLocation = ({ position }) => {
+const MyLocationMarker = ({ position }) => {
   return (
     <Marker position={position} icon={icon} />
   )
 }
 
-export default MyLocation
+export default MyLocationMarker

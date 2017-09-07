@@ -1,55 +1,31 @@
 import React, { Component } from 'react'
-import Map from './Map'
-import { restaurantsRef } from './lib/firebase'
-import Sidebar from './Sidebar'
-import { EXPLORE, SELECT_LOCATION, ADD_LOCATION } from './modes'
-
-const MenuButton = ({ mode, onClick, onCancel }) => {
-  return (
-    <div id="menu-toggler">
-      {
-        mode !== SELECT_LOCATION && <button onClick={onClick} className="btn btn-default">
-          <i className="fa fa-bars fa-lg"></i>
-        </button>
-      }
-      {
-        mode === SELECT_LOCATION && <button onClick={onCancel} className="btn btn-default">
-          <i className="fa fa-angle-left fa-lg"></i>
-          &nbsp;&nbsp;Batal
-        </button>
-      }
-    </div>
-  )
-}
-
-const AddLocationButton = ({ onClick }) => {
-  return (
-    <div id="add-location-button">
-      <div onClick={onClick} className="add-location-button-desc">Pilih Lokasi</div>
-      <div className="add-location-button-arrow"></div>
-    </div>
-  )
-}
+import Map                  from '../Map/Map'
+import Sidebar              from '../Sidebar/Sidebar'
+import { restaurantsRef }   from '../firebase'
+import * as Modes           from '../modes'
+import MenuButton           from './MenuButton'
+import SelectLocationButton from './SelectLocationButton'
 
 class App extends Component {
   state = {
-    mode: EXPLORE,
+    mode: Modes.EXPLORE,
     markers: [],
     center: undefined,
     myLocation: undefined,
+    selectedLocation: undefined,
     isSidebarActive: false,
   }
   constructor() {
     super()
-    this.handleMapLoad = this.handleMapLoad.bind(this)
-    this.handleMapClick = this.handleMapClick.bind(this)
-    this.handleMarkerClick = this.handleMarkerClick.bind(this)
-    this.handleMarkerClose = this.handleMarkerClose.bind(this)
-    this.handleCenterChanged = this.handleCenterChanged.bind(this)
-    this.handleToggleSidebar = this.handleToggleSidebar.bind(this)
-    this.handleChangeMode = this.handleChangeMode.bind(this)
+    this.handleMapLoad        = this.handleMapLoad.bind(this)
+    this.handleMapClick       = this.handleMapClick.bind(this)
+    this.handleMarkerClick    = this.handleMarkerClick.bind(this)
+    this.handleMarkerClose    = this.handleMarkerClose.bind(this)
+    this.handleCenterChanged  = this.handleCenterChanged.bind(this)
+    this.handleToggleSidebar  = this.handleToggleSidebar.bind(this)
+    this.handleChangeMode     = this.handleChangeMode.bind(this)
     this.handleChooseLocation = this.handleChooseLocation.bind(this)
-    this.handleCancel = this.handleCancel.bind(this)
+    this.handleResetMode      = this.handleResetMode.bind(this)
   }
   componentDidMount() {
     this.getCurrentPosition()
@@ -111,35 +87,39 @@ class App extends Component {
     console.log(latLng.lat(), latLng.lng())
   }
   handleCenterChanged() {
-    this.setState({
-      center: this._map.getCenter(),
-    })
+    const center = this._map.getCenter()
+    this.setState({ center })
   }
   handleChooseLocation() {
-    // TODO get current latlng
-    this.setState({
-      mode: ADD_LOCATION,
-    })
+    const mode = Modes.ADD_LOCATION
+    this.setState(prev => ({
+      mode,
+      selectedLocation: prev.center
+    }))
     this.handleToggleSidebar()
   }
-  handleCancel() {
-    this.setState({ mode: EXPLORE })
+  handleResetMode() {
+    this.setState({
+      mode: Modes.EXPLORE,
+      selectedLocation: undefined,
+    })
   }
   render() {
     const fullHeight = { height: '100%' }
     const mapContainer = <div id="map-container" style={fullHeight} />
     const mapElement = <div id="map-element" style={fullHeight} />
 
-    const { isSidebarActive, mode } = this.state
+    const { selectedLocation, isSidebarActive, mode, myLocation, center, markers, } = this.state
     return (
       <div id="app-container" style={fullHeight}>
-        <Sidebar mode={mode} onChangeMode={this.handleChangeMode} onClose={this.handleToggleSidebar} active={isSidebarActive} />
-        <MenuButton mode={mode} onCancel={this.handleCancel} onClick={this.handleToggleSidebar} />
-        {mode === SELECT_LOCATION && <AddLocationButton onClick={this.handleChooseLocation} />}
+        <Sidebar mode={mode} onResetMode={this.handleResetMode} onChangeMode={this.handleChangeMode} onClose={this.handleToggleSidebar} active={isSidebarActive} />
+        <MenuButton mode={mode} onCancel={this.handleResetMode} onClick={this.handleToggleSidebar} />
+        {mode === Modes.SELECT_LOCATION && <SelectLocationButton onClick={this.handleChooseLocation} />}
         <Map
-          myLocation={this.state.myLocation}
-          center={this.state.center}
-          markers={this.state.markers}
+          selectedLocation={selectedLocation}
+          myLocation={myLocation}
+          center={center}
+          markers={markers}
           containerElement={mapContainer}
           mapElement={mapElement}
           onMapLoad={this.handleMapLoad}
