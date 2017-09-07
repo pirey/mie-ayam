@@ -69,6 +69,7 @@ class App extends Component {
     if ('geolocation' in navigator) {
       const handleCurrentPosition = (position) => {
         const { latitude: lat, longitude: lng } = position.coords
+        this._map.panTo({ lat, lng })
         this.setState({
           center: { lat, lng },
           myLocation: { lat, lng },
