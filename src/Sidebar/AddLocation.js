@@ -4,8 +4,10 @@ const AddLocation = ({ onClose, onSubmit }) => {
   return (
     <div className="panel panel-default">
       <div className="panel-heading">
-        <button onClick={onClose} className="close"><span>&times;</span></button>
-        <h3 className="panel-title">Daftarkan Tempat Baru</h3>
+        <h3 className="panel-title">
+          <button onClick={onClose} className="btn btn-link btn-lg"><i className="fa fa-chevron-left"></i></button>
+          Daftarkan Tempat Baru
+        </h3>
       </div>
       <div className="panel-body">
         <form id="form-add" onSubmit={onSubmit}>

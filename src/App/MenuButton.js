@@ -11,7 +11,7 @@ const MenuButton = ({ mode, onClick, onCancel }) => {
       }
       {
         mode === Modes.SELECT_LOCATION && <button onClick={onCancel} className="btn btn-default">
-          <i className="fa fa-angle-left"></i>
+          <i className="fa fa-chevron-left"></i>
           &nbsp;&nbsp;Batal
         </button>
       }

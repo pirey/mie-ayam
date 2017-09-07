@@ -5,7 +5,7 @@ const Explore = ({ onInitSelect, onClose }) => {
   return (
     <div className="panel panel-default">
       <div className="panel-heading">
-        <button onClick={onClose} className="close"><span>&times;</span></button>
+        <button onClick={onClose} className="btn btn-link btn-lg"><i className="fa fa-chevron-left"></i></button>
         <button className="btn btn-link btn-lg" onClick={onInitSelect}>
           <span style={{marginRight: 10}}><img style={{width: 24, height: 24}} src={locIcon} alt="daftarkan tempat baru" /></span>
           Daftarkan Tempat Baru

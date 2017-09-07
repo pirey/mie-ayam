@@ -108,6 +108,10 @@ body {
     font-size: 24px;
 }
 
+.mr10 {
+    margin-right: 10px;
+}
+
 .cut {
     white-space: nowrap;
     overflow: hidden;
