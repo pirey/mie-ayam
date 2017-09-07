@@ -110,6 +110,10 @@ html, body, #root {
     text-overflow: ellipsis;
 }
 
+.btn-link:hover {
+    text-decoration: none;
+}
+
 @media all and (max-width: 500px) {
     #sidebar {
         width: 100%;
