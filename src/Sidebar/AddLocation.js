@@ -16,9 +16,8 @@ class AddLocation extends React.Component {
   }
   handleSubmit(e) {
     e.preventDefault()
-    console.log(this.state)
-    // const { onSubmit } = this.props
-    // onSubmit()
+    const { onSubmit } = this.props
+    onSubmit(this.state)
   }
   handleNameChange(e) {
     const { name, value } = e.target
@@ -89,14 +88,14 @@ class AddLocation extends React.Component {
             </div>
             {this.renderMenus()}
             {
-              menus.length < MAX_MENU && <div className="clearfix">
-                <button type="button" onClick={this.handleAddMenu} className="btn btn-link pull-right no-pt">
+              menus.length < MAX_MENU && <div className="form-group">
+                <button type="button" onClick={this.handleAddMenu} className="btn btn-link no-pt">
                   <i className="fa fa-plus"></i>&nbsp;Tambah menu
                 </button>
               </div>
             }
             <div className="form-group">
-              <button onClick={this.handleSubmit} className="btn btn-primary">Simpan</button>
+              <button onClick={this.handleSubmit} className="btn btn-primary btn-block">Simpan</button>
             </div>
           </form>
         </div>

@@ -27,10 +27,40 @@ class App extends React.Component {
     this.handleChangeMode     = this.handleChangeMode.bind(this)
     this.handleChooseLocation = this.handleChooseLocation.bind(this)
     this.handleResetMode      = this.handleResetMode.bind(this)
+    this.handleAddLocation    = this.handleAddLocation.bind(this)
+    this.handleRemoveLocation = this.handleRemoveLocation.bind(this)
   }
   componentDidMount() {
     this.getCurrentPosition()
     this.handleRestaurantData()
+  }
+  handleAddLocation({ name, menus }) {
+    // TODO handle async flow
+    const { lat, lng } = this.state.center
+    const newRestaurant = restaurantsRef.push()
+
+    newRestaurant.set({
+      name,
+      latLng: { lat: lat(), lng: lng() },
+    })
+
+    if (menus.length) {
+      menus.forEach(m => {
+        newRestaurant.child('menus').push().set({
+          name: m.name,
+          price: m.price,
+        })
+      })
+    }
+
+    this.handleResetMode()
+  }
+  handleRemoveLocation(id) {
+    restaurantsRef.child(id).remove().then(() => {
+      const markers = this.state.markers.filter(m => m.id !== id)
+      this.setState({ markers })
+      this.handleResetMode()
+    })
   }
   handleChangeMode(mode) {
     this.setState({ mode })
@@ -63,17 +93,18 @@ class App extends React.Component {
   handleRestaurantData() {
     restaurantsRef.on('value', (snap) => {
       const restaurants = snap.val()
-      const mapMenus = menus => Object.keys(menus).map(id => ({
+      const mapMenus = menus => menus ? Object.keys(menus).map(id => ({
         id,
         name: menus[id].name,
         price: menus[id].price,
-      }))
+      })) : []
       const markers = Object.keys(restaurants).map(id => ({
         id,
         name: restaurants[id].name,
         position: restaurants[id].latLng,
         menus: mapMenus(restaurants[id].menus),
       }))
+      console.log('new markers', markers)
       this.setState({ markers })
     })
   }
@@ -98,6 +129,10 @@ class App extends React.Component {
   }
   handleMapClick({ latLng }) {
     console.log(latLng.lat(), latLng.lng())
+    // restaurantsRef.push().set({
+    //   name: 'tes click',
+    //   latLng: { lat: latLng.lat(), lng: latLng.lng() },
+    // })
   }
   handleCenterChanged() {
     const center = this._map.getCenter()
@@ -126,7 +161,7 @@ class App extends React.Component {
     const { selectedLocation, isSidebarActive, mode, myLocation, center, markers, selectedMarker } = this.state
     return (
       <div id="app-container" style={fullHeight}>
-        <Sidebar selectedMarker={selectedMarker} mode={mode} onResetMode={this.handleResetMode} onChangeMode={this.handleChangeMode} onClose={this.handleToggleSidebar} active={isSidebarActive} />
+        <Sidebar onRemoveLocation={this.handleRemoveLocation} onAddLocation={this.handleAddLocation} selectedMarker={selectedMarker} mode={mode} onResetMode={this.handleResetMode} onChangeMode={this.handleChangeMode} onClose={this.handleToggleSidebar} active={isSidebarActive} />
         <MenuButton mode={mode} onCancel={this.handleResetMode} onClick={this.handleToggleSidebar} />
         {mode === Modes.SELECT_LOCATION && <SelectLocationButton onClick={this.handleChooseLocation} />}
         <Map

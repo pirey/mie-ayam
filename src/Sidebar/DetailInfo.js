@@ -18,13 +18,13 @@ const MenuList = ({ menus }) => {
   )
 }
 
-const DetailInfo = ({ restaurant, onClose }) => {
+const DetailInfo = ({ onDelete, restaurant, onClose }) => {
   const { name, menus } = restaurant
   return (
     <div className="panel panel-default">
       <div className="panel-heading">
         <button onClick={onClose} className="btn btn-link btn-lg"><i className="fa fa-chevron-left"></i></button>
-        <button className="btn btn-link btn-lg"><i className="fa fa-times"></i></button>
+        <button onClick={() => onDelete(restaurant.id)} className="btn btn-link btn-lg"><i className="fa fa-times"></i></button>
       </div>
       <div className="panel-body">
         <div id="detail-info">
