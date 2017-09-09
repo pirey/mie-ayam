@@ -147,6 +147,17 @@ body {
     color: #c9302c;
 }
 
+.btn-primary,
+.btn-primary:active,
+.btn-primary:focus,
+.btn-primary:hover,
+.btn-primary:active:hover,
+.btn-primary:focus:active,
+.btn-primary:focus:hover {
+    background-color: #50bca9;
+    border-color: #50bca9;
+}
+
 @media all and (max-width: 500px) {
     #sidebar {
         width: 100%;
