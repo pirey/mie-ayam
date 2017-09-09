@@ -52,16 +52,16 @@ class AddLocation extends React.Component {
         {menus.map((m, i) => (
           <div key={i} className="list-group-item">
             <div className="form-group">
-              <label>Nama Menu</label>
+              <label>Menu</label>
               <input value={m.name} onChange={this.handleMenuChange(i, 'name')} className="form-control" />
             </div>
             <div className="form-group">
               <label>Harga</label>
               <input value={m.price} onChange={this.handleMenuChange(i, 'price')} type="number" className="form-control" />
             </div>
-            <div className="form-group">
-              <button type="button" onClick={this.handleRemoveMenu(i)} className="btn btn-danger">
-                <i className="fa fa-times"></i>
+            <div className="form-group nomargin">
+              <button type="button" onClick={this.handleRemoveMenu(i)} className="btn btn-link red">
+                <i className="fa fa-trash-o"></i>&nbsp;Hapus
               </button>
             </div>
           </div>
@@ -77,10 +77,10 @@ class AddLocation extends React.Component {
         <div className="panel-heading">
           <h3 className="panel-title">
             <button type="button" onClick={onClose} className="btn btn-link btn-lg"><i className="fa fa-chevron-left"></i></button>
-            Daftarkan Tempat Baru
           </h3>
         </div>
         <div className="panel-body">
+          <h3 className="nomt mb30">Daftarkan tempat baru</h3>
           <form id="form-add" onSubmit={this.handleSubmit}>
             <div className="form-group">
               <label>Nama Tempat</label>

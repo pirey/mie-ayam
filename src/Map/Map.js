@@ -9,6 +9,7 @@ import RestaurantMarker             from './RestaurantMarker'
 const defaultOptions = {
   disableDefaultUI: true,
   disableDoubleClickZoom: true,
+  zoomControl: true,
   minZoom: 13,
   maxZoom: 20,
   styles: [

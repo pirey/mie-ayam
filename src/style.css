@@ -113,6 +113,16 @@ body {
     margin-right: 10px;
 }
 
+.mb30 {
+    margin-bottom: 30px;
+}
+.nomt {
+    margin-top: 0;
+}
+.nomargin {
+    margin: 0;
+}
+
 .cut {
     white-space: nowrap;
     overflow: hidden;
@@ -125,6 +135,16 @@ body {
 .btn-link:focus {
     outline: none;
     text-decoration: none;
+}
+
+.btn-link.red {
+    color: #d9534f;
+}
+.btn-link.red:hover {
+    color: #d43f3a;
+}
+.btn-link.red:active {
+    color: #c9302c;
 }
 
 @media all and (max-width: 500px) {
