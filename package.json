@@ -5,7 +5,10 @@
   "private": true,
   "dependencies": {
     "firebase": "^4.3.0",
+    "folktale": "^2.0.1",
     "gh-pages": "^1.0.0",
+    "immutable": "^3.8.1",
+    "immutable-ext": "^1.1.2",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-google-maps": "^7.2.0"

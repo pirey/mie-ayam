@@ -1,11 +1,51 @@
 import React from 'react'
+import { Success, Failure, collect } from 'folktale/validation'
 
 const MAX_MENU = 8
 
+const extractErrors = xs =>
+  xs.reduce((a, b) =>
+    a.concat(b.fold(
+      e =>Failure([e]),
+      _ => Failure([''])
+    )), Success()).value
+
+const required = field => m =>
+  m.trim() ? Success() : Failure([`Silahkan isi ${field}`])
+
+const minlen = field => m =>
+  m.length >= 3 ? Success() : Failure([`${field} terlalu singkat`])
+
+const minlenRequired = field => m => Success().concat(required(field)(m)).concat(minlen(field)(m))
+
+const validateAll = validate => xs =>
+  xs.map(validate)
+
+const validateMenu = m => Success().concat(minlenRequired('menu')(m.name))
+
+const validateMenus = validateAll(validateMenu)
+
+const validateName = minlenRequired('Nama tempat')
+
+const validate = ({ name, menus }) => {
+  const raw = {
+    name: validateName(name),
+    menus: validateMenus(menus),
+  }
+  const validation = Success().concat(raw.name).concat(collect(raw.menus))
+  return ({ raw, validation })
+}
+
 class AddLocation extends React.Component {
   state = {
-    name: '',
-    menus: []
+    form: {
+      name: '',
+      menus: [],
+    },
+    errors: {
+      name: '',
+      menus: [],
+    }
   }
   constructor() {
     super()
@@ -14,46 +54,73 @@ class AddLocation extends React.Component {
     this.handleAddMenu = this.handleAddMenu.bind(this)
     this.handleRemoveMenu = this.handleRemoveMenu.bind(this)
   }
+  setFormState(newState) {
+    this.setState(prev => ({
+      form: {
+        ...prev.form,
+        ...newState,
+      }
+    }))
+  }
   handleSubmit(e) {
     e.preventDefault()
     const { onSubmit } = this.props
-    onSubmit(this.state)
+    const { name, menus } = this.state.form
+    const { validation, raw } = validate({ name, menus })
+
+    const handleFail = e => {
+      const errors = {
+        name: raw.name.fold(e => e, _ => ''),
+        menus: extractErrors(raw.menus),
+      }
+      this.setState({ errors })
+      console.log('fail', errors)
+    }
+
+    const handleSuccess = _ => {
+      console.log('success')
+      onSubmit(this.state.form)
+    }
+
+    validation.fold(handleFail, handleSuccess)
   }
   handleNameChange(e) {
     const { name, value } = e.target
-    this.setState(prev => ({
-      [name]: value
-    }))
+    this.setFormState({
+      [name]: value,
+    })
   }
   handleAddMenu() {
-    const menus = this.state.menus.concat([{
+    const menus = this.state.form.menus.concat([{
       name: '',
       price: '',
     }])
-    if (menus.length <= MAX_MENU) this.setState({ menus })
+    if (menus.length <= MAX_MENU) this.setFormState({ menus })
   }
   handleMenuChange = (idx, field) => e => {
     const { value } = e.target
-    const menus = this.state.menus.map((m, i) => {
+    const menus = this.state.form.menus.map((m, i) => {
       if (i !== idx) return m
       return { ...m, [field]: value }
     })
-    this.setState({ menus })
+    this.setFormState({ menus })
   }
   handleRemoveMenu = idx => () => {
-    this.setState({
-      menus: this.state.menus.filter((m, i) => idx !== i),
+    this.setFormState({
+      menus: this.state.form.menus.filter((m, i) => idx !== i),
     })
   }
   renderMenus() {
-    const { menus } = this.state
+    const { menus } = this.state.form
+    const { menus: errors } = this.state.errors
     return (
       <div className="list-group">
         {menus.map((m, i) => (
           <div key={i} className="list-group-item">
-            <div className="form-group">
+            <div className={`form-group ${(errors &&errors[i]) ? 'has-error' : ''}`}>
               <label className="control-label">Menu</label>
               <input value={m.name} onChange={this.handleMenuChange(i, 'name')} className="form-control" />
+              {errors && errors[i] && errors[i].map((e, k) => <p key={k} className="help-block">{e}</p>)}
             </div>
             <div className="form-group">
               <label className="control-label">Harga</label>
@@ -71,7 +138,8 @@ class AddLocation extends React.Component {
   }
   render() {
     const { onClose } = this.props
-    const { menus } = this.state
+    const { menus } = this.state.form
+    const { name } = this.state.errors
     return (
       <div className="panel panel-default">
         <div className="panel-heading">
@@ -82,9 +150,10 @@ class AddLocation extends React.Component {
         <div className="panel-body">
           <h3 className="nomt mb30">Daftarkan tempat baru</h3>
           <form id="form-add" onSubmit={this.handleSubmit}>
-            <div className="form-group">
+            <div className={`form-group ${name ? 'has-error' : ''}`}>
               <label className="control-label">Nama Tempat</label>
               <input name="name" onChange={this.handleNameChange} className="form-control" />
+              {name && <p className="help-block">{name}</p>}
             </div>
             {this.renderMenus()}
             {
