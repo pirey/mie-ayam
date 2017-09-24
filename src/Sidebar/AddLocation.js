@@ -70,7 +70,7 @@ class AddLocation extends React.Component {
 
     const handleFail = e => {
       const errors = {
-        name: raw.name.fold(e => e, _ => ''),
+        name: raw.name.fold(e => e, _ => []),
         menus: extractErrors(raw.menus),
       }
       this.setState({ errors })
@@ -153,7 +153,7 @@ class AddLocation extends React.Component {
             <div className={`form-group ${name ? 'has-error' : ''}`}>
               <label className="control-label">Nama Tempat</label>
               <input name="name" onChange={this.handleNameChange} className="form-control" />
-              {name && <p className="help-block">{name}</p>}
+              {name && name.map(e => <p key={e} className="help-block">{e}</p>)}
             </div>
             {this.renderMenus()}
             {
