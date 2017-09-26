@@ -1,56 +1,87 @@
 import React from 'react'
-import { Success, Failure, collect } from 'folktale/validation'
-
-const MAX_MENU = 8
-
-const extractErrors = xs =>
-  xs.reduce((a, b) =>
-    a.concat(b.fold(
-      e =>Failure([e]),
-      _ => Failure([''])
-    )), Success()).value
+import { Success, Failure } from 'folktale/validation'
 
 const required = field => m =>
   m.trim() ? Success() : Failure([`Silahkan isi ${field}`])
 
-const minlen = field => m =>
-  m.length >= 3 ? Success() : Failure([`${field} terlalu singkat`])
+const minlen = field => min => m =>
+  m.trim().length > min ? Success() : Failure([`Input ${field} terlalu singkat`])
 
-const minlenRequired = field => m => Success().concat(required(field)(m)).concat(minlen(field)(m))
+const validateFormLocation = ({ name, menus }) => {
+  const validateMenuName = (name) => {
+    return Success()
+      .concat(required('menu')(name))
+      .concat(minlen('menu')(3)(name))
+      .map(_ => []).merge()
+  }
 
-const validateAll = validate => xs =>
-  xs.map(validate)
+  const validateMenuPrice = (price) => {
+    return Success()
+      .concat(required('harga')(price))
+      .map(_ => []).merge()
+  }
 
-const validateMenu = m => Success().concat(minlenRequired('menu')(m.name))
+  const validateName = (name) => {
+    return Success()
+      .concat(required('nama')(name))
+      .concat(minlen('nama')(3)(name))
+      .map(_ => []).merge()
+  }
 
-const validateMenus = validateAll(validateMenu)
+  const validateMenus = (menus) => {
+    return menus.map(menu => {
+      return {
+        name: validateMenuName(menu.name),
+        price: validateMenuPrice(menu.price),
+      }
+    })
+  }
 
-const validateName = minlenRequired('Nama tempat')
+  const checkValid = ({ name, menus }) => {
+    let err = false
+    if (name.length > 0) return false
+    else if (!menus) return true
+    else if (Array.isArray(menus) && menus.length < 1) return true
+    else if (Array.isArray(menus) && menus.length >= 1) {
+      return menus.reduce((b,a) => {
+        if (a.name.length > 0) return false
+        if (a.price.length > 0) return false
+        return true
+      }, false)
+    }
+  }
 
-const validate = ({ name, menus }) => {
-  const raw = {
+  const errors = {
     name: validateName(name),
     menus: validateMenus(menus),
   }
-  const validation = Success().concat(raw.name).concat(collect(raw.menus))
-  return ({ raw, validation })
+
+  const isValid = checkValid(errors)
+
+  return { errors, isValid }
+}
+
+const MAX_MENU = 4
+
+const initialState = {
+  form: {
+    name: '',
+    menus: [],
+  },
+  errors: {
+    name: '',
+    menus: [],
+  }
 }
 
 class AddLocation extends React.Component {
-  state = {
-    form: {
-      name: '',
-      menus: [],
-    },
-    errors: {
-      name: '',
-      menus: [],
-    }
-  }
+  state = { ...initialState }
+
   constructor() {
     super()
-    this.handleNameChange = this.handleNameChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleChangeInput = this.handleChangeInput.bind(this)
+    this.handleChangeMenu = this.handleChangeMenu.bind(this)
     this.handleAddMenu = this.handleAddMenu.bind(this)
     this.handleRemoveMenu = this.handleRemoveMenu.bind(this)
   }
@@ -62,29 +93,27 @@ class AddLocation extends React.Component {
       }
     }))
   }
+  resetErrors(field) {
+    this.setState(_ => ({
+      errors: { ...initialState.errors }
+    }))
+  }
   handleSubmit(e) {
     e.preventDefault()
     const { onSubmit } = this.props
     const { name, menus } = this.state.form
-    const { validation, raw } = validate({ name, menus })
 
-    const handleFail = e => {
-      const errors = {
-        name: raw.name.fold(e => e, _ => []),
-        menus: extractErrors(raw.menus),
-      }
-      this.setState({ errors })
-      console.log('fail', errors)
+    const { errors, isValid } = validateFormLocation({ name, menus })
+
+    if (isValid) {
+      onSubmit({ name, menus })
+    }
+    else {
+      this.setState(_ => ({ errors }) )
     }
 
-    const handleSuccess = _ => {
-      console.log('success')
-      onSubmit(this.state.form)
-    }
-
-    validation.fold(handleFail, handleSuccess)
   }
-  handleNameChange(e) {
+  handleChangeInput(e) {
     const { name, value } = e.target
     this.setFormState({
       [name]: value,
@@ -97,7 +126,7 @@ class AddLocation extends React.Component {
     }])
     if (menus.length <= MAX_MENU) this.setFormState({ menus })
   }
-  handleMenuChange = (idx, field) => e => {
+  handleChangeMenu = (idx, field) => e => {
     const { value } = e.target
     const menus = this.state.form.menus.map((m, i) => {
       if (i !== idx) return m
@@ -106,6 +135,7 @@ class AddLocation extends React.Component {
     this.setFormState({ menus })
   }
   handleRemoveMenu = idx => () => {
+    this.resetErrors()
     this.setFormState({
       menus: this.state.form.menus.filter((m, i) => idx !== i),
     })
@@ -117,14 +147,15 @@ class AddLocation extends React.Component {
       <div className="list-group">
         {menus.map((m, i) => (
           <div key={i} className="list-group-item">
-            <div className={`form-group ${(errors &&errors[i]) ? 'has-error' : ''}`}>
+            <div className={`form-group ${ errors[i] && errors[i].name.length ? 'has-error' : '' }`}>
               <label className="control-label">Menu</label>
-              <input value={m.name} onChange={this.handleMenuChange(i, 'name')} className="form-control" />
-              {errors && errors[i] && errors[i].map((e, k) => <p key={k} className="help-block">{e}</p>)}
+              <input value={m.name} onChange={this.handleChangeMenu(i, 'name')} className="form-control" />
+              {errors[i] && errors[i].name && errors[i].name.map((e, k) => <p key={k} className="help-block">{e}</p>)}
             </div>
-            <div className="form-group">
+            <div className={`form-group ${ errors[i] && errors[i].price.length ? 'has-error' : '' }`}>
               <label className="control-label">Harga</label>
-              <input value={m.price} onChange={this.handleMenuChange(i, 'price')} type="number" className="form-control" />
+              <input value={m.price} onChange={this.handleChangeMenu(i, 'price')} type="number" className="form-control" />
+              {errors[i] && errors[i].price && errors[i].price.map((e, k) => <p key={k} className="help-block">{e}</p>)}
             </div>
             <div className="form-group nomargin">
               <button type="button" onClick={this.handleRemoveMenu(i)} className="btn btn-link red">
@@ -150,9 +181,9 @@ class AddLocation extends React.Component {
         <div className="panel-body">
           <h3 className="nomt mb30">Daftarkan tempat baru</h3>
           <form id="form-add" onSubmit={this.handleSubmit}>
-            <div className={`form-group ${name ? 'has-error' : ''}`}>
+            <div className={`form-group ${name.length ? 'has-error' : ''}`}>
               <label className="control-label">Nama Tempat</label>
-              <input name="name" onChange={this.handleNameChange} className="form-control" />
+              <input name="name" onChange={this.handleChangeInput} className="form-control" />
               {name && name.map(e => <p key={e} className="help-block">{e}</p>)}
             </div>
             {this.renderMenus()}
