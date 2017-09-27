@@ -1,6 +1,6 @@
 import React       from 'react'
 import DetailInfo  from './DetailInfo'
-import AddLocation from './AddLocation'
+import AddLocation from './AddLocation/AddLocation'
 import Explore     from './Explore'
 import * as Modes  from '../modes'
 

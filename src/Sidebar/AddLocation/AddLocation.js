@@ -1,68 +1,9 @@
 import React from 'react'
-import { Success, Failure } from 'folktale/validation'
-
-const required = field => m =>
-  m.trim() ? Success() : Failure([`Silahkan isi ${field}`])
-
-const minlen = field => min => m =>
-  m.trim().length > min ? Success() : Failure([`Input ${field} terlalu singkat`])
-
-const validateFormLocation = ({ name, menus }) => {
-  const validateMenuName = (name) => {
-    return Success()
-      .concat(required('menu')(name))
-      .concat(minlen('menu')(3)(name))
-      .map(_ => []).merge()
-  }
-
-  const validateMenuPrice = (price) => {
-    return Success()
-      .concat(required('harga')(price))
-      .map(_ => []).merge()
-  }
-
-  const validateName = (name) => {
-    return Success()
-      .concat(required('nama')(name))
-      .concat(minlen('nama')(3)(name))
-      .map(_ => []).merge()
-  }
-
-  const validateMenus = (menus) => {
-    return menus.map(menu => {
-      return {
-        name: validateMenuName(menu.name),
-        price: validateMenuPrice(menu.price),
-      }
-    })
-  }
-
-  const checkValid = ({ name, menus }) => {
-    let err = false
-    if (name.length > 0) return false
-    else if (!menus) return true
-    else if (Array.isArray(menus) && menus.length < 1) return true
-    else if (Array.isArray(menus) && menus.length >= 1) {
-      return menus.reduce((b,a) => {
-        if (a.name.length > 0) return false
-        if (a.price.length > 0) return false
-        return true
-      }, false)
-    }
-  }
-
-  const errors = {
-    name: validateName(name),
-    menus: validateMenus(menus),
-  }
-
-  const isValid = checkValid(errors)
-
-  return { errors, isValid }
-}
+import validate from './validate'
 
 const MAX_MENU = 4
 
+// define init state here, so it can be reused
 const initialState = {
   form: {
     name: '',
@@ -101,12 +42,12 @@ class AddLocation extends React.Component {
   handleSubmit(e) {
     e.preventDefault()
     const { onSubmit } = this.props
-    const { name, menus } = this.state.form
+    const { form } = this.state
 
-    const { errors, isValid } = validateFormLocation({ name, menus })
+    const { errors, isValid } = validate(form)
 
     if (isValid) {
-      onSubmit({ name, menus })
+      onSubmit(form)
     }
     else {
       this.setState(_ => ({ errors }) )
