@@ -1,4 +1,5 @@
 import React from 'react'
+import { rupiah } from '../lib/numberFormatter'
 
 const MenuList = ({ menus }) => {
   return (
@@ -10,7 +11,7 @@ const MenuList = ({ menus }) => {
           </div>
           <div className="media-body">
             <h4 className="media-heading cut cut-default">{menu.name.toUpperCase()}</h4>
-            <p>Rp{menu.price}</p>
+            <p className="menu-item-price">{rupiah(menu.price)}</p>
           </div>
         </li>
       ))}
