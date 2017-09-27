@@ -1,7 +1,7 @@
 import React from 'react'
 import validate from './validate'
 
-const MAX_MENU = 4
+const MAX_MENU = 7
 
 // define init state here, so it can be reused
 const initialState = {
