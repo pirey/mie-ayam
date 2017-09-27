@@ -47,8 +47,8 @@ const checkValid = ({ name, menus }) => {
     return menus.reduce((b,a) => {
       if (a.name.length > 0) return false
       if (a.price.length > 0) return false
-      return true
-    }, false)
+      return (b && true)
+    }, true)
   }
 }
 

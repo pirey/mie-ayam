@@ -58,11 +58,15 @@ body {
 }
 
 #detail-info .media-body {
-    padding-top: 25px;
+    /* padding-top: 25px; */
 }
 
 #detail-info .menu-item-price {
     font-size: 1.3em;
+}
+
+#detail-info .form-group {
+    margin-bottom: 0;
 }
 
 #sidebar {
@@ -123,6 +127,9 @@ body {
 .nomt {
     margin-top: 0;
 }
+.mt10 {
+    margin-top: 10px;
+}
 .nomargin {
     margin: 0;
 }
@@ -157,6 +164,16 @@ body {
     background-color: #ddd;
 }
 
+.btn-link.primary {
+    color: #50bca9;
+}
+.btn-link.primary:hover {
+    color: #50bca9;
+}
+.btn-link.primary:active {
+    color: #50bca9;
+}
+
 .btn-link.red {
     color: #d9534f;
 }
@@ -180,6 +197,20 @@ body {
 .btn-primary:hover {
     background-color: #42a090;
     border-color: #42a090;
+}
+
+input {
+    width: 100%;
+    border: none;
+    padding-bottom: 8px;
+    padding: 5px;
+    border-radius: 4px;
+    /* border-bottom: 2px solid #dedede; */
+}
+input:hover,
+input:focus {
+    outline: none;
+    background: rgba(150,150,150,.1);
 }
 
 @media all and (max-width: 500px) {

@@ -28,6 +28,7 @@ class App extends React.Component {
     this.handleChooseLocation = this.handleChooseLocation.bind(this)
     this.handleResetMode      = this.handleResetMode.bind(this)
     this.handleAddLocation    = this.handleAddLocation.bind(this)
+    this.handleUpdateLocation = this.handleUpdateLocation.bind(this)
     this.handleRemoveLocation = this.handleRemoveLocation.bind(this)
   }
   componentDidMount() {
@@ -52,6 +53,23 @@ class App extends React.Component {
         })
       })
     }
+
+    this.handleResetMode()
+  }
+  handleUpdateLocation(restaurant) {
+    const { id, name, latLng } = restaurant
+    const menus = restaurant.menus.reduce((b, a) => {
+      const { id, name, price } = a
+      return {
+        ...b,
+        [id]: { name, price },
+      }
+    }, {})
+    restaurantsRef.child(id).set({
+      name,
+      latLng,
+      menus,
+    })
 
     this.handleResetMode()
   }
@@ -102,6 +120,7 @@ class App extends React.Component {
         id,
         name: restaurants[id].name,
         position: restaurants[id].latLng,
+        latLng: restaurants[id].latLng,
         menus: mapMenus(restaurants[id].menus),
       }))
       console.log('new markers', markers)
@@ -164,7 +183,7 @@ class App extends React.Component {
     const { selectedLocation, isSidebarActive, mode, myLocation, center, markers, selectedMarker } = this.state
     return (
       <div id="app-container" style={fullHeight}>
-        <Sidebar onRemoveLocation={this.handleRemoveLocation} onAddLocation={this.handleAddLocation} selectedMarker={selectedMarker} mode={mode} onResetMode={this.handleResetMode} onChangeMode={this.handleChangeMode} onClose={this.handleToggleSidebar} active={isSidebarActive} />
+        <Sidebar onRemoveLocation={this.handleRemoveLocation} onUpdateLocation={this.handleUpdateLocation} onAddLocation={this.handleAddLocation} selectedMarker={selectedMarker} mode={mode} onResetMode={this.handleResetMode} onChangeMode={this.handleChangeMode} onClose={this.handleToggleSidebar} active={isSidebarActive} />
         <MenuButton mode={mode} onCancel={this.handleResetMode} onClick={this.handleToggleSidebar} />
         {mode === Modes.SELECT_LOCATION && <SelectLocationButton onClick={this.handleChooseLocation} />}
         <Map
