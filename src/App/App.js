@@ -126,6 +126,9 @@ class App extends React.Component {
   }
   handleMapLoad(map) {
     this._map = map
+
+    const center = this._map.getCenter()
+    this.setState({ center })
   }
   handleMapClick({ latLng }) {
     console.log(latLng.lat(), latLng.lng())
