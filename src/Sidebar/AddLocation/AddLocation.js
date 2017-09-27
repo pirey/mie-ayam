@@ -99,9 +99,10 @@ class AddLocation extends React.Component {
               {errors[i] && errors[i].price && errors[i].price.map((e, k) => <p key={k} className="help-block">{e}</p>)}
             </div>
             <div className="form-group nomargin">
-              <button type="button" onClick={this.handleRemoveMenu(i)} className="btn btn-link red">
+              <button type="button" onClick={this.handleRemoveMenu(i)} className="btn btn-link red pull-right">
                 <i className="fa fa-trash-o"></i>&nbsp;Hapus
               </button>
+              <div className="clearfix"></div>
             </div>
           </div>
         ))}
@@ -130,7 +131,7 @@ class AddLocation extends React.Component {
             {this.renderMenus()}
             {
               menus.length < MAX_MENU && <div className="form-group">
-                <button type="button" onClick={this.handleAddMenu} className="btn btn-link no-pt">
+                <button type="button" onClick={this.handleAddMenu} className="btn btn-link">
                   <i className="fa fa-plus"></i>&nbsp;Tambah menu
                 </button>
               </div>

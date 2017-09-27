@@ -129,12 +129,28 @@ body {
     text-overflow: ellipsis;
 }
 
+.btn-link {
+    color: #947858;
+}
+
 .btn-link:hover,
 .btn-link:active,
 .btn-link:active:focus,
 .btn-link:focus {
+    color: #947858;
     outline: none;
     text-decoration: none;
+}
+
+.btn-link:hover {
+    background-color: #efefef;
+    color: #947858;
+}
+
+.btn-link:active,
+.btn-link:active:focus {
+    color: #947858;
+    background-color: #ddd;
 }
 
 .btn-link.red {
@@ -150,12 +166,16 @@ body {
 .btn-primary,
 .btn-primary:active,
 .btn-primary:focus,
-.btn-primary:hover,
 .btn-primary:active:hover,
 .btn-primary:focus:active,
 .btn-primary:focus:hover {
     background-color: #50bca9;
     border-color: #50bca9;
+}
+
+.btn-primary:hover {
+    background-color: #42a090;
+    border-color: #42a090;
 }
 
 @media all and (max-width: 500px) {
