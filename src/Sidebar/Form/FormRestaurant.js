@@ -101,15 +101,17 @@ class FormRestaurant extends React.Component {
             </div>
             <div className="media-body">
                 <h4 className="media-heading cut cut-default">
-                  <div className={`form-group ${ errors[i] && errors[i].name.length ? 'has-error' : '' }`}>
+                  <label className={`form-group ${ errors[i] && errors[i].name.length ? 'has-error' : '' }`}>
                     <input name="name" value={menu.name} onChange={this.handleChangeMenu(i, 'name')} placeholder="Menu" />
                     {errors[i] && errors[i].name && errors[i].name.map((e, k) => <small key={k} className="help-block">{e}</small>)}
-                  </div>
+                  </label>
                 </h4>
-                <div className={`menu-item-price form-group ${ errors[i] && errors[i].price.length ? 'has-error' : '' }`}>
-                  <input name="price" value={menu.price} onChange={this.handleChangeMenu(i, 'price')} placeholder="Harga" />
-                  {errors[i] && errors[i].price && errors[i].price.map((e, k) => <small key={k} className="help-block">{e}</small>)}
-                </div>
+                <h4 className="media-heading">
+                  <label className={`menu-item-price form-group ${ errors[i] && errors[i].price.length ? 'has-error' : '' }`}>
+                    <input name="price" value={menu.price} onChange={this.handleChangeMenu(i, 'price')} placeholder="Harga" />
+                    {errors[i] && errors[i].price && errors[i].price.map((e, k) => <small key={k} className="help-block">{e}</small>)}
+                  </label>
+                </h4>
               </div>
             </li>
         ))}
@@ -131,10 +133,10 @@ class FormRestaurant extends React.Component {
           <form onSubmit={this.handleSubmit} id="detail-info">
             <div className="detail-info-heading">
               <h3 className="detail-info-title">
-                <div className={`form-group ${nameError.length ? 'has-error' : ''}`}>
+                <label className={`form-group ${nameError.length ? 'has-error' : ''}`}>
                   <input name="name" value={name} onChange={this.handleChangeInput} placeholder="Nama tempat" />
                   {nameError && nameError.map(e => <small key={e} className="help-block">{e}</small>)}
-                </div>
+                </label>
               </h3>
             </div>
             <div className="detail-info-thumbnail">

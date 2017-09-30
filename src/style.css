@@ -62,11 +62,21 @@ body {
 }
 
 #detail-info .menu-item-price {
-    font-size: 1.3em;
+    /* font-size: 1.3em; */
 }
 
 #detail-info .form-group {
     margin-bottom: 0;
+}
+
+#detail-info .form-group.has-error {
+    border: 1px solid rgba(214, 108, 76, 0.5);
+    border-radius: 4px;
+    padding: 10px;
+}
+
+#detail-info label.form-group {
+    display: block;
 }
 
 #sidebar {
