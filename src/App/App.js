@@ -119,7 +119,6 @@ class App extends React.Component {
       const markers = Object.keys(restaurants).map(id => ({
         id,
         name: restaurants[id].name,
-        position: restaurants[id].latLng,
         latLng: restaurants[id].latLng,
         menus: mapMenus(restaurants[id].menus),
       }))

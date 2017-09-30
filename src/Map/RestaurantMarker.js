@@ -1,11 +1,11 @@
-import React                  from 'react'
+import React      from 'react'
 import { Marker } from "react-google-maps"
-import eatIcon                from './eat.png'
+import eatIcon    from './eat.png'
 
-const RestaurantMarker = ({ position, onClick, onMarkerClose }) => (
+const RestaurantMarker = ({ latLng, onClick, onMarkerClose }) => (
   <Marker
     icon={eatIcon}
-    position={position}
+    position={latLng}
     onClick={onClick}
   />
 )
