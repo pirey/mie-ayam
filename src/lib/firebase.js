@@ -15,3 +15,6 @@ export default firebase
 
 export const root = firebase.database().ref()
 export const restaurantsRef = firebase.database().ref('restaurants')
+
+export const storage = firebase.storage()
+export const restaurantImgRef = storage.ref('restaurants')

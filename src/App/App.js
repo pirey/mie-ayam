@@ -1,7 +1,7 @@
-import React from 'react'
+import React                from 'react'
 import Map                  from '../Map/Map'
 import Sidebar              from '../Sidebar/Sidebar'
-import { restaurantsRef }   from '../firebase'
+import { restaurantsRef }   from '../lib/firebase'
 import * as Modes           from '../modes'
 import MenuButton           from './MenuButton'
 import SelectLocationButton from './SelectLocationButton'
@@ -35,13 +35,14 @@ class App extends React.Component {
     this.getCurrentPosition()
     this.handleRestaurantData()
   }
-  handleAddLocation({ name, menus }) {
+  handleAddLocation({ name, img, menus }) {
     // TODO handle async flow
     const { lat, lng } = this.state.center
     const newRestaurant = restaurantsRef.push()
 
     newRestaurant.set({
       name,
+      img,
       latLng: { lat: lat(), lng: lng() },
     })
 
@@ -49,6 +50,7 @@ class App extends React.Component {
       menus.forEach(m => {
         newRestaurant.child('menus').push().set({
           name: m.name,
+          img: m.img,
           price: m.price,
         })
       })
@@ -57,16 +59,17 @@ class App extends React.Component {
     this.handleResetMode()
   }
   handleUpdateLocation(restaurant) {
-    const { id, name, latLng } = restaurant
+    const { id, name, img, latLng } = restaurant
     const menus = restaurant.menus.reduce((b, a) => {
-      const { id, name, price } = a
+      const { id, name, price, img } = a
       return {
         ...b,
-        [id]: { name, price },
+        [id]: { name, price, img },
       }
     }, {})
     restaurantsRef.child(id).set({
       name,
+      img,
       latLng,
       menus,
     })
@@ -113,11 +116,13 @@ class App extends React.Component {
       const restaurants = snap.val()
       const mapMenus = menus => menus ? Object.keys(menus).map(id => ({
         id,
+        img: menus[id].img || '',
         name: menus[id].name,
         price: menus[id].price,
       })) : []
       const markers = Object.keys(restaurants).map(id => ({
         id,
+        img: restaurants[id].img || '',
         name: restaurants[id].name,
         latLng: restaurants[id].latLng,
         menus: mapMenus(restaurants[id].menus),
@@ -182,7 +187,16 @@ class App extends React.Component {
     const { selectedLocation, isSidebarActive, mode, myLocation, center, markers, selectedMarker } = this.state
     return (
       <div id="app-container" style={fullHeight}>
-        <Sidebar onRemoveLocation={this.handleRemoveLocation} onUpdateLocation={this.handleUpdateLocation} onAddLocation={this.handleAddLocation} selectedMarker={selectedMarker} mode={mode} onResetMode={this.handleResetMode} onChangeMode={this.handleChangeMode} onClose={this.handleToggleSidebar} active={isSidebarActive} />
+        <Sidebar
+          onRemoveLocation={this.handleRemoveLocation}
+          onUpdateLocation={this.handleUpdateLocation}
+          onAddLocation={this.handleAddLocation}
+          selectedMarker={selectedMarker}
+          mode={mode}
+          onResetMode={this.handleResetMode}
+          onChangeMode={this.handleChangeMode}
+          onClose={this.handleToggleSidebar}
+          active={isSidebarActive} />
         <MenuButton mode={mode} onCancel={this.handleResetMode} onClick={this.handleToggleSidebar} />
         {mode === Modes.SELECT_LOCATION && <SelectLocationButton onClick={this.handleChooseLocation} />}
         <Map
