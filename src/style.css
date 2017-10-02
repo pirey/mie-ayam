@@ -10,6 +10,23 @@ body {
 #app-container {
 }
 
+#navbar {
+    position: absolute;
+    padding: 10px 15px;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 99;
+    background: #51baa8;
+    box-sizing: border-box;
+    border-bottom: 1px solid #dddddd;
+    color: white;
+}
+
+#navbar .btn {
+    color: white;
+}
+
 #add-location-button {
     position: absolute;
     top: 50%;
@@ -143,6 +160,8 @@ body {
     margin-bottom: 0;
     overflow-y: auto;
     border-radius: 0;
+    background: url('./bg.png');
+    background-size: 100%;
 }
 
 #sidebar.active {
@@ -152,13 +171,7 @@ body {
 #sidebar .panel {
     border-radius: 0;
     border: 0;
-}
-
-#menu-toggler {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    z-index: 90;
+    background: transparent;
 }
 
 #map-container {
@@ -264,7 +277,7 @@ input {
     padding-bottom: 8px;
     padding: 5px;
     border-radius: 4px;
-    /* border-bottom: 2px solid #dedede; */
+    background: transparent;
 }
 input:hover,
 input:focus {

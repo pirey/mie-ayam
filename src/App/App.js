@@ -3,7 +3,7 @@ import Map                  from '../Map/Map'
 import Sidebar              from '../Sidebar/Sidebar'
 import { restaurantsRef }   from '../lib/firebase'
 import * as Modes           from '../modes'
-import MenuButton           from './MenuButton'
+import Navbar               from './Navbar'
 import SelectLocationButton from './SelectLocationButton'
 
 class App extends React.Component {
@@ -37,7 +37,8 @@ class App extends React.Component {
   }
   handleAddLocation({ name, img, menus }) {
     // TODO handle async flow
-    const { lat, lng } = this.state.center
+    // const { lat, lng } = this.state.center
+    const { lat, lng } = this.state.selectedLocation
     const newRestaurant = restaurantsRef.push()
 
     newRestaurant.set({
@@ -197,7 +198,7 @@ class App extends React.Component {
           onChangeMode={this.handleChangeMode}
           onClose={this.handleToggleSidebar}
           active={isSidebarActive} />
-        <MenuButton mode={mode} onCancel={this.handleResetMode} onClick={this.handleToggleSidebar} />
+        <Navbar mode={mode} onCancel={this.handleResetMode} onToggle={this.handleToggleSidebar} />
         {mode === Modes.SELECT_LOCATION && <SelectLocationButton onClick={this.handleChooseLocation} />}
         <Map
           selectedLocation={selectedLocation}
