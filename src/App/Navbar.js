@@ -22,7 +22,7 @@ const Navbar = ({ mode, onToggle, onCancel }) => {
     <div id="navbar">
       {mode !== Modes.SELECT_LOCATION && <ToggleButton onClick={onToggle} />}
       {mode === Modes.SELECT_LOCATION && <CancelButton onClick={onCancel} />}
-      <a href={process.env.PUBLIC_URL} className="btn btn-lg btn-link font-weight-bold">
+      <a className="btn btn-lg btn-link font-weight-bold">
         Mie Ayam
       </a>
     </div>
