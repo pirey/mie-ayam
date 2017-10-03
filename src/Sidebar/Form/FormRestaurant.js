@@ -161,9 +161,6 @@ class FormRestaurant extends React.Component {
               {
                 !menu.img && <InputImg id={`input-img-${menu.id}`} name="img" onChange={this.handleChangeMenuImg(i)} className="media-object" />
               }
-              <button type="button" onClick={this.handleRemoveMenu(i)} className="btn btn-link red mt10 btn-block">
-                <i className="fa fa-trash-o"></i>
-              </button>
             </div>
             <div className="media-body">
               <h4 className="media-heading cut cut-default">
@@ -174,10 +171,20 @@ class FormRestaurant extends React.Component {
               </h4>
               <h4 className="media-heading">
                 <label className={`menu-item-price form-group ${ errors[i] && errors[i].price.length ? 'has-error' : '' }`}>
-                  <input name="price" value={menu.price} onChange={this.handleChangeMenu(i, 'price')} placeholder="Harga" />
+                  <input name="price"
+                    value={menu.price}
+                    onChange={this.handleChangeMenu(i, 'price')}
+                    placeholder="Harga"
+                    className={menu.price.trim().length > 0 ? 'f2' : ''}
+                  />
                   {errors[i] && errors[i].price && errors[i].price.map((e, k) => <small key={k} className="help-block">{e}</small>)}
                 </label>
               </h4>
+              <div className="mt20">
+                <button type="button" onClick={this.handleRemoveMenu(i)} className="btn btn-danger btn-block">
+                  Hapus
+                </button>
+              </div>
             </div>
           </li>
         ))}
