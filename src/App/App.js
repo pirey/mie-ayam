@@ -4,7 +4,7 @@ import Sidebar              from '../Sidebar/Sidebar'
 import { restaurantsRef }   from '../lib/firebase'
 import * as Modes           from '../modes'
 import Navbar               from './Navbar'
-import SelectLocationButton from './SelectLocationButton'
+import LocationSelector     from './LocationSelector'
 
 class App extends React.Component {
   state = {
@@ -199,7 +199,7 @@ class App extends React.Component {
           onClose={this.handleToggleSidebar}
           active={isSidebarActive} />
         <Navbar mode={mode} onCancel={this.handleResetMode} onToggle={this.handleToggleSidebar} />
-        {mode === Modes.SELECT_LOCATION && <SelectLocationButton onClick={this.handleChooseLocation} />}
+        {mode === Modes.SELECT_LOCATION && <LocationSelector onClick={this.handleChooseLocation} />}
         <Map
           selectedLocation={selectedLocation}
           myLocation={myLocation}

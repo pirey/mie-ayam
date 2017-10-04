@@ -1,6 +1,6 @@
 import React from 'react'
 
-const SelectLocationButton = ({ onClick }) => {
+const LocationSelector = ({ onClick }) => {
   return (
     <div id="location-selector">
       <div onClick={onClick} className="desc">Pilih Lokasi</div>
@@ -9,4 +9,4 @@ const SelectLocationButton = ({ onClick }) => {
   )
 }
 
-export default SelectLocationButton
+export default LocationSelector
