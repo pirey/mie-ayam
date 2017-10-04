@@ -180,7 +180,7 @@ class FormRestaurant extends React.Component {
                   {errors[i] && errors[i].price && errors[i].price.map((e, k) => <small key={k} className="help-block">{e}</small>)}
                 </label>
               </h4>
-              <div className="mt20">
+              <div>
                 <button type="button" onClick={this.handleRemoveMenu(i)} className="btn btn-danger btn-block">
                   Hapus
                 </button>

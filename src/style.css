@@ -93,15 +93,12 @@ body {
     /* padding-top: 25px; */
 }
 
-#detail-info .media:not(:last-child) {
-    /* background: rgba(150,150,150,.1); */
-    padding-bottom: 10px;
-    box-sizing: border-box;
-    border-bottom: 3px solid rgba(150,150,150,.1);
+#detail-info .media-list {
+    margin-bottom: 70px;
 }
-
-#detail-info .menu-item-price {
-    /* font-size: 1.3em; */
+#detail-info .media:not(:last-child) {
+    margin-bottom: 70px;
+    box-sizing: border-box;
 }
 
 #detail-info .form-group {
@@ -297,6 +294,7 @@ input {
     padding: 5px;
     border-radius: 4px;
     background: transparent;
+    background: rgba(150,150,150,.1);
     text-transform: uppercase;
 }
 
@@ -307,7 +305,7 @@ input {
 input:hover,
 input:focus {
     outline: none;
-    background: rgba(150,150,150,.1);
+    background: rgba(150,150,150,.3);
 }
 
 @media all and (max-width: 500px) {
