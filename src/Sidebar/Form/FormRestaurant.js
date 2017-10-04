@@ -1,6 +1,7 @@
 import React from 'react'
 import validate from './validate'
 import { restaurantImgRef } from '../../lib/firebase'
+import Cleave from 'cleave.js/react'
 // import { rupiah } from '../lib/numberFormatter'
 
 const MAX_MENU = 7
@@ -128,10 +129,10 @@ class FormRestaurant extends React.Component {
     }
   }
   handleChangeMenu = (idx, field) => e => {
-    const { value } = e.target
+    const { rawValue, value } = e.target // get raw value from cleave.js
     const menus = this.state.form.menus.map((m, i) => {
       if (i !== idx) return m
-      return { ...m, [field]: value }
+      return { ...m, [field]: rawValue || value }
     })
     this.setFormState({ menus })
   }
@@ -171,11 +172,16 @@ class FormRestaurant extends React.Component {
               </h4>
               <h4 className="media-heading">
                 <label className={`menu-item-price form-group ${ errors[i] && errors[i].price.length ? 'has-error' : '' }`}>
-                  <input name="price"
+                  <Cleave
                     value={menu.price}
-                    onChange={this.handleChangeMenu(i, 'price')}
-                    placeholder="Harga"
                     className={menu.price.trim().length > 0 ? 'f2' : ''}
+                    placeholder="Harga"
+                    onChange={this.handleChangeMenu(i, 'price')}
+                    options={{
+                      numeral: true,
+                      numeralDecimalMark: ',',
+                      delimiter: '.',
+                    }}
                   />
                   {errors[i] && errors[i].price && errors[i].price.map((e, k) => <small key={k} className="help-block">{e}</small>)}
                 </label>

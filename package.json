@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "cleave.js": "^1.0.1",
     "firebase": "^4.3.0",
     "folktale": "^2.0.1",
     "gh-pages": "^1.0.0",
