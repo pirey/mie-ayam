@@ -151,7 +151,7 @@ class FormRestaurant extends React.Component {
     const { menus } = this.state.form
     const { menus: errors } = this.state.errors
     return (
-      <ul className="detail-info-menu media-list">
+      <ul className="resto-menu media-list">
         {menus.map((menu, i) => (
           <li key={i} className="media">
             <div className="media-left">
@@ -199,23 +199,21 @@ class FormRestaurant extends React.Component {
       <div className="panel panel-default">
         <div className="panel-heading">
           <button onClick={onClose} className="btn btn-link btn-lg"><i className="fa fa-chevron-left"></i></button>
-          <button form="detail-info" type="submit" className="btn btn-link btn-lg primary"><i className="fa fa-check"></i> Simpan</button>
+          <button form="form-restaurant" type="submit" className="btn btn-link btn-lg primary"><i className="fa fa-check"></i> Simpan</button>
           {onDelete && <button onClick={() => onDelete(id)} className="btn btn-link btn-lg red"><i className="fa fa-trash-o"></i>&nbsp;Hapus</button>}
         </div>
         <div className="panel-body">
-          <form onSubmit={this.handleSubmit} id="detail-info">
-            <div className="detail-info-heading">
-              <h3 className="detail-info-title">
-                <label className={`form-group ${nameError.length ? 'has-error' : ''}`}>
-                  <input name="name" value={name} onChange={this.handleChangeInput} placeholder="Nama tempat" />
-                  {nameError && nameError.map(e => <small key={e} className="help-block">{e}</small>)}
-                </label>
-              </h3>
-            </div>
-            <div className="detail-info-thumbnail">
+          <form onSubmit={this.handleSubmit} id="form-restaurant">
+            <h3 className="resto-name">
+              <label className={`form-group ${nameError.length ? 'has-error' : ''}`}>
+                <input name="name" value={name} onChange={this.handleChangeInput} placeholder="Nama tempat" />
+                {nameError && nameError.map(e => <small key={e} className="help-block">{e}</small>)}
+              </label>
+            </h3>
+            <div className="resto-thumbnail">
               {img && <img alt="restaurant" className="img-responsive" src={img} />}
               {
-                !img &&  <InputImg id="restaurant-img" name="img" size="l" label="Tambahkan foto lokasi" onChange={this.handleChangeImg} />
+                !img &&  <InputImg id="resto-img" name="img" size="l" label="Tambahkan foto lokasi" onChange={this.handleChangeImg} />
               }
             </div>
             {this.renderMenus()}
