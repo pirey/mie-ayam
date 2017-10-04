@@ -282,7 +282,7 @@ input:focus {
     z-index: 100;
     position: absolute;
     top: 0;
-    left: -100%;
+    left: -150%;
     width: 25%;
     min-width: 350px;
     max-width: 100%;
