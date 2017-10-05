@@ -49,11 +49,7 @@ class App extends React.Component {
 
     if (menus.length) {
       menus.forEach(m => {
-        newRestaurant.child('menus').push().set({
-          name: m.name,
-          img: m.img,
-          price: m.price,
-        })
+        newRestaurant.child('menus').push().set(m)
       })
     }
 
@@ -61,21 +57,43 @@ class App extends React.Component {
   }
   handleUpdateLocation(restaurant) {
     const { id, name, img, latLng } = restaurant
-    const menus = restaurant.menus.reduce((b, a) => {
+    const menuPromises = restaurant.menus.map(a => {
       const { id, name, price, img } = a
-      return {
-        ...b,
-        [id]: { name, price, img },
-      }
-    }, {})
-    restaurantsRef.child(id).set({
-      name,
-      img,
-      latLng,
-      menus,
-    })
 
-    this.handleResetMode()
+      if (!!id) {
+        return Promise.resolve(a)
+      }
+      else {
+        const newMenu = restaurantsRef.child(restaurant.id).child('menus').push()
+        return newMenu.set({
+          name,
+          price,
+          img,
+        }).then(_ => ({
+          id: newMenu.key,
+          name,
+          price,
+          img,
+        }))
+      }
+    })
+    Promise.all(menuPromises).then(menuArray => {
+      const menus = menuArray.reduce((b,a) => {
+        const { id, name, price, img } = a
+        return {
+          ...b,
+          [id]: { name, price, img }
+        }
+      }, {})
+      restaurantsRef.child(id).set({
+        name,
+        img,
+        latLng,
+        menus,
+      })
+
+      this.handleResetMode()
+    })
   }
   handleRemoveLocation(id) {
     restaurantsRef.child(id).remove().then(() => {

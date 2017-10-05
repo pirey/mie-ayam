@@ -12,7 +12,10 @@ const assign = (a,b) => Object.assign({}, a, b)
 const initialState = {
   form: {
     name: '',
-    img: '',
+    img: {
+      src: '',
+      ref: '',
+    },
     menus: [],
   },
   errors: {
@@ -24,7 +27,10 @@ const initialState = {
 const menuState = {
   name: '',
   price: '',
-  img: '',
+  img: {
+    src: '',
+    ref: '',
+  },
 }
 
 const InputImg = ({ id, name, onChange, size = 'm', classNames = '', label = '' }) => {
@@ -49,7 +55,7 @@ const MenuThumbnail = ({ id, src, onDelete, onChange, onPreview }) => {
         <button type="button" onClick={onPreview}><i className="fa fa-eye"></i></button>
         <button type="button">
           <label htmlFor={id}>
-            <i className="fa fa-pencil"></i>
+            <i className="fa fa-camera"></i>
             <input id={id} type="file" className="hidden" onChange={onChange} />
           </label>
         </button>
@@ -93,7 +99,6 @@ class FormRestaurant extends React.Component {
     }))
   }
   handleChangeInput(e) {
-    console.log('form state', this.state.form)
     const { name, value } = e.target
     this.setFormState({
       [name]: value,
@@ -119,17 +124,20 @@ class FormRestaurant extends React.Component {
     if (input.files && input.files[0]) {
       const { name } = input.files[0]
       restaurantImgRef.child(name).put(input.files[0]).then(snapshot => {
-        console.log(snapshot)
         const url = snapshot.downloadURL
-        this.setFormState({ img: url })
+        const img = {
+          src: url,
+          ref: name,
+        }
+        this.setFormState({ img })
       })
     }
   }
-  setMenuImgState({ idx, url }) {
+  setMenuImgState({ idx, img }) {
     const menus = this.state.form.menus.map((m, i) => {
       const withImg = {
         ...m,
-        img: url,
+        img,
       }
       return (i === idx) ? withImg : m
     })
@@ -141,7 +149,11 @@ class FormRestaurant extends React.Component {
       const { name } = input.files[0]
       restaurantImgRef.child(name).put(input.files[0]).then(snapshot => {
         const url = snapshot.downloadURL
-        this.setMenuImgState({ idx, url })
+        const img = {
+          src: url,
+          ref: name,
+        }
+        this.setMenuImgState({ idx, img })
       })
     }
   }
@@ -174,10 +186,10 @@ class FormRestaurant extends React.Component {
           <li key={i} className="media">
             <div className="media-left">
               {
-                menu.img && <MenuThumbnail id={`menu-thumbnail-${menu.id}`} src={menu.img} onChange={this.handleChangeMenuImg(i)} />
+                menu.img.src && <MenuThumbnail id={`menu-thumbnail-${menu.id}`} src={menu.img.src} onChange={this.handleChangeMenuImg(i)} />
               }
               {
-                !menu.img && <InputImg id={`input-img-${menu.id}`} name="img" onChange={this.handleChangeMenuImg(i)} className="media-object" />
+                !menu.img.src && <InputImg id={`input-img-${menu.id}`} name="img" onChange={this.handleChangeMenuImg(i)} className="media-object" />
               }
             </div>
             <div className="media-body">
@@ -205,7 +217,7 @@ class FormRestaurant extends React.Component {
               </h4>
               <div>
                 <button type="button" onClick={this.handleRemoveMenu(i)} className="btn btn-danger btn-block">
-                  Hapus
+                  <i className="fa fa-trash"></i>
                 </button>
               </div>
             </div>
@@ -234,10 +246,8 @@ class FormRestaurant extends React.Component {
               </label>
             </h3>
             <div className="resto-thumbnail">
-              {img && <img alt="restaurant" className="img-responsive" src={img} />}
-              {
-                !img &&  <InputImg id="resto-img" name="img" size="l" label="Tambahkan foto lokasi" onChange={this.handleChangeImg} />
-              }
+              {img.src && <img alt="restaurant" className="img-responsive" src={img.src} />}
+              {!img.src &&  <InputImg id="resto-img" name="img" size="l" label="Tambahkan foto lokasi" onChange={this.handleChangeImg} />}
             </div>
             {this.renderMenus()}
             {
