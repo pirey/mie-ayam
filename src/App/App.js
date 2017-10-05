@@ -36,8 +36,6 @@ class App extends React.Component {
     this.handleRestaurantData()
   }
   handleAddLocation({ name, img, menus }) {
-    // TODO handle async flow
-    // const { lat, lng } = this.state.center
     const { lat, lng } = this.state.selectedLocation
     const newRestaurant = restaurantsRef.push()
 
@@ -46,57 +44,41 @@ class App extends React.Component {
       img,
       latLng: { lat: lat(), lng: lng() },
     })
-
-    if (menus.length) {
-      menus.forEach(m => {
-        newRestaurant.child('menus').push().set(m)
-      })
-    }
-
-    this.handleResetMode()
+      .then(_ => menus.map(m => newRestaurant.child('menus').push().set(m).then(_ => ({ ...m }))))
+      .then(ps => Promise.all(ps))
+      .then(this.handleResetMode)
   }
   handleUpdateLocation(restaurant) {
-    const { id, name, img, latLng } = restaurant
-    const menuPromises = restaurant.menus.map(a => {
+    const { id: restaurantId, name, img, latLng, menus } = restaurant
+    const ps = menus.map(a => {
       const { id, name, price, img } = a
 
       if (!!id) {
         return Promise.resolve(a)
       }
-      else {
-        const newMenu = restaurantsRef.child(restaurant.id).child('menus').push()
-        return newMenu.set({
-          name,
-          price,
-          img,
-        }).then(_ => ({
-          id: newMenu.key,
-          name,
-          price,
-          img,
+      const m = restaurantsRef.child(restaurantId).child('menus').push()
+      return m.set({ name, price, img, })
+        .then(_ => ({
+          id: m.key,
+          ...a
         }))
-      }
     })
-    Promise.all(menuPromises).then(menuArray => {
-      const menus = menuArray.reduce((b,a) => {
-        const { id, name, price, img } = a
-        return {
-          ...b,
-          [id]: { name, price, img }
-        }
-      }, {})
-      restaurantsRef.child(id).set({
-        name,
-        img,
-        latLng,
-        menus,
-      })
-
-      this.handleResetMode()
-    })
+    Promise.all(ps).then(ms =>
+      ms.reduce((b, { id, name, price, img }) => ({
+        ...b,
+        [id]: { name, price, img },
+      }), {}))
+        .then(menus =>
+          restaurantsRef.child(restaurantId).set({
+            name,
+            img,
+            latLng,
+            menus,
+          }))
+        .then(this.handleResetMode)
   }
   handleRemoveLocation(id) {
-    restaurantsRef.child(id).remove().then(() => {
+    restaurantsRef.child(id).remove().then(_ => {
       const markers = this.state.markers.filter(m => m.id !== id)
       this.setState({ markers })
       this.handleResetMode()
