@@ -104,7 +104,7 @@ input {
     width: 100%;
     border: none;
     padding-bottom: 8px;
-    padding: 5px;
+    padding: 8px;
     border-radius: 4px;
     background: transparent;
     background: rgba(150,150,150,.1);
@@ -199,7 +199,7 @@ input:focus {
     margin-top: 0;
 }
 
-#form-restaurant .resto-thumbnail {
+#form-restaurant .resto-thumb {
     margin-bottom: 15px;
 }
 
@@ -242,13 +242,11 @@ input:focus {
     display: block;
 }
 
-.menu-thumbnail {
-    background: red;
+.thumb {
     position: relative;
-    margin-top: 10px;
 }
 
-.menu-thumbnail-buttons {
+.thumb-buttons {
     position: absolute;
     top: calc(50% - 15px);
     display: flex;
@@ -257,14 +255,21 @@ input:focus {
     right: 0;
     bottom: 0;
     /* text-align: center; */
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
     background: rgba(0,0,0,.1);
 }
-.menu-thumbnail-buttons:hover {
+.thumb-buttons.top-right {
+    justify-content: flex-end;
+    align-items: flex-start;
+}
+.thumb-buttons.top-right button {
+    margin: 10px 10px 0 0;
+}
+.thumb-buttons:hover {
     background: rgba(255,255,255,.1);
 }
-.menu-thumbnail-buttons button {
+.thumb-buttons button {
     width: 30px;
     height: 30px;
     border-radius: 50%;
@@ -273,23 +278,23 @@ input:focus {
     color: white;
     box-shadow: 0 0 0 0 rgba(0,0,0,.1);
 }
-.menu-thumbnail-buttons button label {
+.thumb-buttons button label {
     display: block;
     margin: 0;
     cursor: pointer;
 }
-.menu-thumbnail-buttons button:hover {
+.thumb-buttons button:hover {
     background: rgba(50,50,50,.7);
 }
-.menu-thumbnail-buttons button:focus,
-.menu-thumbnail-buttons button:active:focus,
-.menu-thumbnail-buttons button:active {
+.thumb-buttons button:focus,
+.thumb-buttons button:active:focus,
+.thumb-buttons button:active {
     outline: none;
     background: rgba(20,20,20,.7);
 }
-.menu-thumbnail-buttons button:not(:last-child) {
-    display: inline-block;
-    margin-right: 10px;
+.thumb-buttons button:not(:last-child) {
+    /* display: inline-block; */
+    /* margin-right: 10px; */
 }
 
 /* input image */
@@ -365,6 +370,7 @@ input:focus {
 @media all and (max-width: 500px) {
     #sidebar {
         width: 100%;
+        min-width: 100%;
     }
 
     #navbar {

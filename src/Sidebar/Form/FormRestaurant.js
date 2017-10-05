@@ -48,10 +48,15 @@ const InputImg = ({ id, name, onChange, size = 'm', classNames = '', label = '' 
   )
 }
 
-const MenuThumbnail = ({ id, src, onDelete, onChange, onPreview }) => {
+const Thumb = ({ id, src, onDelete, onChange, onPreview, position = 'center' }) => {
+  const pos = ({
+    center: '',
+    'top-right': 'top-right',
+  })[position] || ''
+
   return (
-    <div className="menu-thumbnail">
-      <div className="menu-thumbnail-buttons">
+    <div className="thumb">
+      <div className={`thumb-buttons ${pos}`}>
         <button type="button" onClick={onPreview}><i className="fa fa-eye"></i></button>
         <button type="button">
           <label htmlFor={id}>
@@ -186,7 +191,7 @@ class FormRestaurant extends React.Component {
           <li key={i} className="media">
             <div className="media-left">
               {
-                menu.img.src && <MenuThumbnail id={`menu-thumbnail-${menu.id}`} src={menu.img.src} onChange={this.handleChangeMenuImg(i)} />
+                menu.img.src && <Thumb id={`thumb-${menu.id}`} src={menu.img.src} onChange={this.handleChangeMenuImg(i)} />
               }
               {
                 !menu.img.src && <InputImg id={`input-img-${menu.id}`} name="img" onChange={this.handleChangeMenuImg(i)} className="media-object" />
@@ -245,8 +250,8 @@ class FormRestaurant extends React.Component {
                 {nameError && nameError.map(e => <small key={e} className="help-block">{e}</small>)}
               </label>
             </h3>
-            <div className="resto-thumbnail">
-              {img.src && <img alt="restaurant" className="img-responsive" src={img.src} />}
+            <div className="resto-thumb">
+              {img.src && <Thumb id="resto-img" src={img.src} onChange={this.handleChangeImg} position="top-right" />}
               {!img.src &&  <InputImg id="resto-img" name="img" size="l" label="Tambahkan foto lokasi" onChange={this.handleChangeImg} />}
             </div>
             {this.renderMenus()}
