@@ -115,15 +115,16 @@ class App extends React.Component {
   handleRestaurantData() {
     restaurantsRef.on('value', (snap) => {
       const restaurants = snap.val()
+      if (!restaurants) return
       const mapMenus = menus => menus ? Object.keys(menus).map(id => ({
         id,
-        img: menus[id].img || '',
+        img: menus[id].img,
         name: menus[id].name,
         price: menus[id].price,
       })) : []
       const markers = Object.keys(restaurants).map(id => ({
         id,
-        img: restaurants[id].img || '',
+        img: restaurants[id].img,
         name: restaurants[id].name,
         latLng: restaurants[id].latLng,
         menus: mapMenus(restaurants[id].menus),
@@ -137,8 +138,9 @@ class App extends React.Component {
       const handleCurrentPosition = (position) => {
         const { latitude: lat, longitude: lng } = position.coords
         this._map.panTo({ lat, lng })
+        const center = this._map.getCenter()
         this.setState({
-          center: { lat, lng },
+          center,
           myLocation: { lat, lng },
         })
       }

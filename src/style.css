@@ -220,7 +220,7 @@ input:focus {
     margin-bottom: 70px;
 }
 #form-restaurant .media:not(:last-child) {
-    margin-bottom: 70px;
+    margin-bottom: 20px;
     box-sizing: border-box;
 }
 
@@ -240,6 +240,56 @@ input:focus {
 
 #form-restaurant label.form-group {
     display: block;
+}
+
+.menu-thumbnail {
+    background: red;
+    position: relative;
+    margin-top: 10px;
+}
+
+.menu-thumbnail-buttons {
+    position: absolute;
+    top: calc(50% - 15px);
+    display: flex;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* text-align: center; */
+    justify-content: center;
+    align-items: center;
+    background: rgba(0,0,0,.1);
+}
+.menu-thumbnail-buttons:hover {
+    background: rgba(255,255,255,.1);
+}
+.menu-thumbnail-buttons button {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0,0,0,.7);
+    color: white;
+    box-shadow: 0 0 0 0 rgba(0,0,0,.1);
+}
+.menu-thumbnail-buttons button label {
+    display: block;
+    margin: 0;
+    cursor: pointer;
+}
+.menu-thumbnail-buttons button:hover {
+    background: rgba(50,50,50,.7);
+}
+.menu-thumbnail-buttons button:focus,
+.menu-thumbnail-buttons button:active:focus,
+.menu-thumbnail-buttons button:active {
+    outline: none;
+    background: rgba(20,20,20,.7);
+}
+.menu-thumbnail-buttons button:not(:last-child) {
+    display: inline-block;
+    margin-right: 10px;
 }
 
 /* input image */

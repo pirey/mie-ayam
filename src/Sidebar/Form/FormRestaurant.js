@@ -42,6 +42,24 @@ const InputImg = ({ id, name, onChange, size = 'm', classNames = '', label = '' 
   )
 }
 
+const MenuThumbnail = ({ id, src, onDelete, onChange, onPreview }) => {
+  return (
+    <div className="menu-thumbnail">
+      <div className="menu-thumbnail-buttons">
+        <button type="button" onClick={onPreview}><i className="fa fa-eye"></i></button>
+        <button type="button">
+          <label htmlFor={id}>
+            <i className="fa fa-pencil"></i>
+            <input id={id} type="file" className="hidden" onChange={onChange} />
+          </label>
+        </button>
+        <button type="button" onClick={onDelete}><i className="fa fa-trash"></i></button>
+      </div>
+      <img className="media-object" src={src} alt="mie ayam" />
+    </div>
+  )
+}
+
 class FormRestaurant extends React.Component {
   constructor({ restaurant }) {
     super()
@@ -122,7 +140,6 @@ class FormRestaurant extends React.Component {
     if (input.files && input.files[0]) {
       const { name } = input.files[0]
       restaurantImgRef.child(name).put(input.files[0]).then(snapshot => {
-        console.log(snapshot)
         const url = snapshot.downloadURL
         this.setMenuImgState({ idx, url })
       })
@@ -157,7 +174,7 @@ class FormRestaurant extends React.Component {
           <li key={i} className="media">
             <div className="media-left">
               {
-                menu.img && <img className="media-object" src={menu.img} alt="mie ayam" />
+                menu.img && <MenuThumbnail id={`menu-thumbnail-${menu.id}`} src={menu.img} onChange={this.handleChangeMenuImg(i)} />
               }
               {
                 !menu.img && <InputImg id={`input-img-${menu.id}`} name="img" onChange={this.handleChangeMenuImg(i)} className="media-object" />
