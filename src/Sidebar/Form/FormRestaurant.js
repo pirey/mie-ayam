@@ -221,8 +221,8 @@ class FormRestaurant extends React.Component {
                 </label>
               </h4>
               <div>
-                <button type="button" onClick={this.handleRemoveMenu(i)} className="btn btn-danger btn-block">
-                  <i className="fa fa-trash"></i>
+                <button type="button" onClick={this.handleRemoveMenu(i)} className="btn btn-default btn-block">
+                  <i className="fa fa-trash text-danger"></i>
                 </button>
               </div>
             </div>
