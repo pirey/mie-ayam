@@ -244,8 +244,9 @@ input:focus {
 
 .thumb {
     position: relative;
+    box-shadow: 0 3px 4px 1px rgba(0,0,0,.5);
+    transition: all .3s ease;
 }
-
 .thumb-buttons {
     position: absolute;
     top: calc(50% - 15px);
