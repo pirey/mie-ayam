@@ -30,6 +30,7 @@ class App extends React.Component {
     this.handleAddLocation    = this.handleAddLocation.bind(this)
     this.handleUpdateLocation = this.handleUpdateLocation.bind(this)
     this.handleRemoveLocation = this.handleRemoveLocation.bind(this)
+    this.handleSelectionMode  = this.handleSelectionMode.bind(this)
   }
   componentDidMount() {
     this.getCurrentPosition()
@@ -182,6 +183,10 @@ class App extends React.Component {
       isSidebarActive: false,
     })
   }
+  handleSelectionMode() {
+    this.handleChangeMode(Modes.SELECT_LOCATION)
+    this.handleToggleSidebar()
+  }
   render() {
     const fullHeight = { height: '100%' }
     const mapContainer = <div id="map-container" style={fullHeight} />
@@ -191,15 +196,17 @@ class App extends React.Component {
     return (
       <div id="app-container" style={fullHeight}>
         <Sidebar
-          onRemoveLocation={this.handleRemoveLocation}
-          onUpdateLocation={this.handleUpdateLocation}
-          onAddLocation={this.handleAddLocation}
           selectedMarker={selectedMarker}
           mode={mode}
+          active={isSidebarActive}
+          onSelectionMode={this.handleSelectionMode}
           onResetMode={this.handleResetMode}
           onChangeMode={this.handleChangeMode}
           onClose={this.handleToggleSidebar}
-          active={isSidebarActive} />
+          onRemoveLocation={this.handleRemoveLocation}
+          onUpdateLocation={this.handleUpdateLocation}
+          onAddLocation={this.handleAddLocation}
+        />
         <Navbar mode={mode} onCancel={this.handleResetMode} onToggle={this.handleToggleSidebar} />
         {mode === Modes.SELECT_LOCATION && <LocationSelector onClick={this.handleChooseLocation} />}
         <Map
