@@ -197,10 +197,11 @@ input:focus {
 
 #form-restaurant .resto-name {
     margin-top: 0;
+    margin-bottom: 10px;
 }
 
 #form-restaurant .resto-thumb {
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 #form-restaurant .media-left {
@@ -220,12 +221,12 @@ input:focus {
     margin-bottom: 70px;
 }
 #form-restaurant .media:not(:last-child) {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     box-sizing: border-box;
 }
 
 #form-restaurant .form-group {
-    margin-bottom: 0;
+    margin-bottom: 5px;
 }
 
 #form-restaurant .form-group.has-error {

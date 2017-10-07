@@ -21,22 +21,22 @@ class App extends React.Component {
     this.handleMapLoad        = this.handleMapLoad.bind(this)
     this.handleMapClick       = this.handleMapClick.bind(this)
     this.handleMarkerClick    = this.handleMarkerClick.bind(this)
-    this.handleMarkerClose    = this.handleMarkerClose.bind(this)
     this.handleCenterChanged  = this.handleCenterChanged.bind(this)
     this.handleToggleSidebar  = this.handleToggleSidebar.bind(this)
     this.handleChangeMode     = this.handleChangeMode.bind(this)
     this.handleChooseLocation = this.handleChooseLocation.bind(this)
     this.handleResetMode      = this.handleResetMode.bind(this)
-    this.handleAddLocation    = this.handleAddLocation.bind(this)
+    this.handleSelectionMode  = this.handleSelectionMode.bind(this)
+
+    this.handleCreateLocation = this.handleCreateLocation.bind(this)
     this.handleUpdateLocation = this.handleUpdateLocation.bind(this)
     this.handleRemoveLocation = this.handleRemoveLocation.bind(this)
-    this.handleSelectionMode  = this.handleSelectionMode.bind(this)
   }
   componentDidMount() {
     this.getCurrentPosition()
     this.handleRestaurantData()
   }
-  handleAddLocation({ name, img, menus }) {
+  handleCreateLocation({ name, img, menus }) {
     const { lat, lng } = this.state.selectedLocation
     const newRestaurant = restaurantsRef.push()
 
@@ -100,18 +100,6 @@ class App extends React.Component {
       selectedLocation: undefined,
       isSidebarActive: true,
     })
-    // const nextMarkers = this.state.markers.map(m => m === targetMarker ? ({
-    //   ...m,
-    //   showInfo: true,
-    // }) : m)
-    // this.setState({ markers: nextMarkers })
-  }
-  handleMarkerClose(targetMarker) {
-    // const nextMarkers = this.state.markers.map(m => m === targetMarker ? ({
-    //   ...m,
-    //   showInfo: false,
-    // }) : m)
-    // this.setState({ markers: nextMarkers })
   }
   handleRestaurantData() {
     restaurantsRef.on('value', (snap) => {
@@ -159,10 +147,6 @@ class App extends React.Component {
   }
   handleMapClick({ latLng }) {
     console.log(latLng.lat(), latLng.lng())
-    // restaurantsRef.push().set({
-    //   name: 'tes click',
-    //   latLng: { lat: latLng.lat(), lng: latLng.lng() },
-    // })
   }
   handleCenterChanged() {
     const center = this._map.getCenter()
@@ -205,7 +189,7 @@ class App extends React.Component {
           onClose={this.handleToggleSidebar}
           onRemoveLocation={this.handleRemoveLocation}
           onUpdateLocation={this.handleUpdateLocation}
-          onAddLocation={this.handleAddLocation}
+          onCreateLocation={this.handleCreateLocation}
         />
         <Navbar mode={mode} onCancel={this.handleResetMode} onToggle={this.handleToggleSidebar} />
         {mode === Modes.SELECT_LOCATION && <LocationSelector onClick={this.handleChooseLocation} />}
@@ -220,7 +204,6 @@ class App extends React.Component {
           onMapClick={this.handleMapClick}
           onCenterChanged={this.handleCenterChanged}
           onMarkerClick={this.handleMarkerClick}
-          onMarkerClose={this.handleMarkerClose}
         />
       </div>
     )
