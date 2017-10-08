@@ -49,6 +49,9 @@ class App extends React.Component {
       .then(ps => Promise.all(ps))
       .then(this.handleResetMode)
   }
+  handlePartialUpdate = id => partialUpdate => {
+    restaurantsRef.child(id).update(partialUpdate)
+  }
   handleUpdateLocation(restaurant) {
     const { id: restaurantId, name, img, latLng, menus } = restaurant
     const ps = menus.map(a => {
@@ -187,6 +190,7 @@ class App extends React.Component {
           onResetMode={this.handleResetMode}
           onChangeMode={this.handleChangeMode}
           onClose={this.handleToggleSidebar}
+          onPartialUpdate={this.handlePartialUpdate}
           onRemoveLocation={this.handleRemoveLocation}
           onUpdateLocation={this.handleUpdateLocation}
           onCreateLocation={this.handleCreateLocation}

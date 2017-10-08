@@ -10,7 +10,7 @@ const Menus = (props) => {
         <li key={i} className="media">
           <div className="media-left">
             <InputThumb
-              id={`thumb-${menu.id}`}
+              id={`thumb-${i}`}
               src={menu.img.src}
               onChange={handleChangeMenuImg(i)}
               onDelete={handleDeleteMenuImg(i)}

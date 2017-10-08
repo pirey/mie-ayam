@@ -5,10 +5,23 @@ import FormRestaurant from './FormRestaurant'
 
 const MAX_MENU = 7
 
-const assign = (a,b) => Object.assign({}, a, b)
+const readFile = file =>
+  new Promise((res, rej) => {
+    const reader = new FileReader()
+    reader.onload = e => {
+      const src = e.target.result
+      res(src)
+    }
+    reader.readAsDataURL(file)
+  })
 
 // define init state here, so it can be reused
 const initialState = {
+  // files to be uploaded
+  queues: {
+    img: null,
+    menus: [],
+  },
   form: {
     name: '',
     img: {
@@ -35,12 +48,8 @@ const menuState = {
 class FormAdd extends React.Component {
   constructor({ restaurant }) {
     super()
-    const form = restaurant ? assign(initialState.form, restaurant) : initialState.form
-    console.log('form', form)
-    console.log('restaurant', restaurant)
     this.state = {
-      form,
-      errors: initialState.errors,
+      ...initialState,
     }
 
     this.handleChangeImg = this.handleChangeImg.bind(this)
@@ -53,55 +62,67 @@ class FormAdd extends React.Component {
     this.handleDeleteMenuImg = this.handleDeleteMenuImg.bind(this)
     this.handleDeleteImg = this.handleDeleteImg.bind(this)
   }
-  componentWillReceiveProps({ restaurant }) {
-    if (!restaurant) return
-    if (restaurant.id !== this.state.form.id)
-      this.setState({ form: restaurant })
+  componentWillUpdate(props, nextState) {
+    console.log('next state', nextState)
   }
-  setFormState(newState) {
-    this.setState(prev => ({
-      form: {
-        ...prev.form,
-        ...newState,
+  /* set nested state */
+  setNState(field, newState) {
+    this.setState(prev => {
+      return {
+        [field]: {
+          ...prev[field],
+          ...newState,
+        }
       }
-    }))
+    })
   }
   handleChangeInput(e) {
     const { name, value } = e.target
-    this.setFormState({
+    this.setNState('form', {
       [name]: value,
     })
   }
   handleAddMenu() {
     const menus = this.state.form.menus.concat([menuState])
-    if (menus.length <= MAX_MENU) this.setFormState({ menus })
+    const menuQueues = this.state.queues.menus.concat(null)
+    if (menus.length <= MAX_MENU) {
+      this.setNState('form', { menus })
+      this.setNState('queues', { menus: menuQueues })
+    }
   }
   handleRemoveMenu = idx => () => {
     this.resetErrors()
-    this.setFormState({
+    this.setNState('queues', {
+      menus: this.state.queues.menus.filter((m, i) => idx !== i),
+    })
+    this.setNState('form', {
       menus: this.state.form.menus.filter((m, i) => idx !== i),
     })
   }
   handleDeleteImg() {
-    const ref = this.state.form.img.ref
-    console.log('deleting img', ref)
-    restaurantImgRef.child(ref).delete().then(_ => {
-      const img = {
-        ref: '',
-        src: '',
-      }
-      this.setFormState({ img })
+    this.setNState('queues', {
+      img: null,
     })
+    this.setNState('form', {
+      img: { ref: '', src: '' }
+    })
+    // const ref = this.state.form.img.ref
+    // console.log('deleting img', ref)
+    // restaurantImgRef.child(ref).delete().then(_ => {
+    //   const img = {
+    //     ref: '',
+    //     src: '',
+    //   }
+    //   this.setNState('form', { img })
+    // })
   }
   handleDeleteMenuImg = idx => () => {
-    const ref = this.state.form.menus[idx].img.ref
-    console.log('deleting image', ref)
-    restaurantImgRef.child(ref).delete().then(_ => {
-      const img = {
-        ref: '',
-        src: '',
-      }
-      this.setMenuImgState({ idx, img })
+    this.setNState('queues', {
+      menus: this.state.queues.menus.map((m, i) => i === idx ? null : m)
+    })
+    this.setMenuImgState({
+      idx,
+      img: { ref: '', src: '', }
     })
   }
   resetErrors(field) {
@@ -111,17 +132,33 @@ class FormAdd extends React.Component {
   }
   handleChangeImg(e) {
     const input = e.target
-    if (input.files && input.files[0]) {
-      const { name } = input.files[0]
-      restaurantImgRef.child(name).put(input.files[0]).then(snapshot => {
-        const url = snapshot.downloadURL
-        const img = {
-          src: url,
-          ref: name,
-        }
-        this.setFormState({ img })
+
+    if (!input.files) return
+
+    const file = input.files[0]
+    readFile(file).then(src => {
+      this.setNState('form', {
+        img: { src }
       })
-    }
+      this.setNState('queues', {
+        img: file,
+      })
+    })
+  }
+  handleChangeMenuImg = idx => e => {
+    const input = e.target
+    if (!input.files) return
+
+    const file = input.files[0]
+    readFile(file).then(src => {
+      this.setMenuImgState({
+        idx,
+        img: { src },
+      })
+      this.setNState('queues', {
+        menus: this.state.queues.menus.map((m, i) => i === idx ? file : m)
+      })
+    })
   }
   setMenuImgState({ idx, img }) {
     const menus = this.state.form.menus.map((m, i) => {
@@ -131,29 +168,58 @@ class FormAdd extends React.Component {
       }
       return (i === idx) ? withImg : m
     })
-    this.setFormState({ menus })
+    this.setNState('form', { menus })
   }
-  handleChangeMenuImg = idx => e => {
-    const input = e.target
-    if (input.files && input.files[0]) {
-      const { name } = input.files[0]
-      restaurantImgRef.child(name).put(input.files[0]).then(snapshot => {
-        const url = snapshot.downloadURL
+  handleChangeMenuInput = (idx, field) => e => {
+    const { rawValue, value } = e.target // get raw value from cleave.js
+    const menus = this.state.form.menus.map((m, i) => {
+      return (i === idx)
+        ? { ...m, [field]: rawValue || value }
+        : m
+    })
+    console.log('change menu input', idx, field, menus)
+    this.setNState('form', { menus })
+  }
+  uploadQueues() {
+    const uploadImg = file => {
+      if (!file) return Promise.resolve()
+
+      const { name } = file
+      return restaurantImgRef.child(name).put(file).then(snapshot => {
+        const src = snapshot.downloadURL
         const img = {
-          src: url,
+          src,
+          ref: name,
+        }
+        this.setNState('form', { img })
+      })
+    }
+
+    const uploadMenuImg = queue => {
+      const { idx, file } = queue
+      if (!file) return Promise.resolve()
+
+      const { name } = file
+      return restaurantImgRef.child(name).put(file).then(snapshot => {
+        const src = snapshot.downloadURL
+        const img = {
+          src,
           ref: name,
         }
         this.setMenuImgState({ idx, img })
       })
     }
-  }
-  handleChangeMenuInput = (idx, field) => e => {
-    const { rawValue, value } = e.target // get raw value from cleave.js
-    const menus = this.state.form.menus.map((m, i) => {
-      if (i !== idx) return m
-      return { ...m, [field]: rawValue || value }
+
+    const queues = this.state.queues
+    const { img, menus } = queues
+    const imgTask = uploadImg(img)
+    const menuTasks = menus.map(m => uploadMenuImg(m))
+
+    const ps = [imgTask, ...menuTasks]
+    return Promise.all(ps).then(_ => {
+      // this will be transformed state
+      return this.state.form
     })
-    this.setFormState({ menus })
   }
   handleSubmit(e) {
     e.preventDefault()
@@ -161,7 +227,7 @@ class FormAdd extends React.Component {
     const { form } = this.state
     const { errors, isValid } = validate(form)
     if (isValid) {
-      onSubmit(form)
+      this.uploadQueues().then(onSubmit)
     }
     else {
       this.setState(_ => ({ errors }) )
