@@ -85,6 +85,22 @@ body {
     color: #c9302c;
 }
 
+.btn-default {
+    background: #ddd;
+    border: none;
+    border-bottom: 3px solid #bbb;
+}
+.btn-default:active {
+    background: #ddd;
+    border: none;
+    box-shadow: none;
+    margin-top: 10px;
+}
+.btn-default:active:focus,
+.btn-default:focus {
+    outline: none;
+}
+
 .btn-primary,
 .btn-primary:active,
 .btn-primary:focus,
@@ -118,7 +134,7 @@ input {
 input:hover,
 input:focus {
     outline: none;
-    background: rgba(150,150,150,.3);
+    background: rgba(150,150,150,.2);
 }
 
 /* component styles */
@@ -247,6 +263,8 @@ input:focus {
     position: relative;
     box-shadow: 0 3px 4px 1px rgba(0,0,0,.5);
     transition: all .3s ease;
+    border-radius: 4px;
+    overflow: hidden;
 }
 .thumb-buttons {
     position: absolute;

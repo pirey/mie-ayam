@@ -36,11 +36,9 @@ const Menus = (props) => {
               />
               {errors[i] && errors[i].price && errors[i].price.map((e, k) => <small key={k} className="help-block">{e}</small>)}
             </label>
-            <div>
-              <button type="button" onClick={handleRemoveMenu(i)} className="btn btn-default btn-block">
-                <i className="fa fa-trash text-danger"></i>
-              </button>
-            </div>
+            <button type="button" onClick={handleRemoveMenu(i)} className="btn btn-default btn-block">
+              <i className="fa fa-trash text-danger"></i>
+            </button>
           </div>
         </li>
       ))}
