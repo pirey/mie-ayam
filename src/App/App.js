@@ -1,7 +1,9 @@
 import React                from 'react'
 import Map                  from '../Map/Map'
 import Sidebar              from '../Sidebar/Sidebar'
-import { restaurantsRef }   from '../lib/firebase'
+import {
+  restaurantsRef,
+  restaurantImgRef }        from '../lib/firebase'
 import * as Modes           from '../modes'
 import Navbar               from './Navbar'
 import LocationSelector     from './LocationSelector'
@@ -28,6 +30,8 @@ class App extends React.Component {
     this.handleResetMode      = this.handleResetMode.bind(this)
     this.handleSelectionMode  = this.handleSelectionMode.bind(this)
 
+    this.handleUpload         = this.handleUpload.bind(this)
+
     this.handleCreateLocation = this.handleCreateLocation.bind(this)
     this.handleUpdateLocation = this.handleUpdateLocation.bind(this)
     this.handleRemoveLocation = this.handleRemoveLocation.bind(this)
@@ -35,6 +39,9 @@ class App extends React.Component {
   componentDidMount() {
     this.getCurrentPosition()
     this.handleRestaurantData()
+  }
+  handleUpload(ref, file) {
+    return restaurantImgRef.child(ref).put(file)
   }
   handleCreateLocation({ name, img, menus }) {
     const { lat, lng } = this.state.selectedLocation
@@ -194,6 +201,7 @@ class App extends React.Component {
           onRemoveLocation={this.handleRemoveLocation}
           onUpdateLocation={this.handleUpdateLocation}
           onCreateLocation={this.handleCreateLocation}
+          onUpload={this.handleUpload}
         />
         <Navbar mode={mode} onCancel={this.handleResetMode} onToggle={this.handleToggleSidebar} />
         {mode === Modes.SELECT_LOCATION && <LocationSelector onClick={this.handleChooseLocation} />}

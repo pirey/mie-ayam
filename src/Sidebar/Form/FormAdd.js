@@ -1,6 +1,5 @@
 import React from 'react'
 import validate from './validate'
-import { restaurantImgRef } from '../../lib/firebase'
 import FormRestaurant from './FormRestaurant'
 
 const MAX_MENU = 7
@@ -106,15 +105,6 @@ class FormAdd extends React.Component {
     this.setNState('form', {
       img: { ref: '', src: '' }
     })
-    // const ref = this.state.form.img.ref
-    // console.log('deleting img', ref)
-    // restaurantImgRef.child(ref).delete().then(_ => {
-    //   const img = {
-    //     ref: '',
-    //     src: '',
-    //   }
-    //   this.setNState('form', { img })
-    // })
   }
   handleDeleteMenuImg = idx => () => {
     this.setNState('queues', {
@@ -181,11 +171,12 @@ class FormAdd extends React.Component {
     this.setNState('form', { menus })
   }
   uploadQueues() {
+    const { onUpload } = this.props
     const uploadImg = file => {
       if (!file) return Promise.resolve()
 
       const { name } = file
-      return restaurantImgRef.child(name).put(file).then(snapshot => {
+      return onUpload(name, file).then(snapshot => {
         const src = snapshot.downloadURL
         const img = {
           src,
@@ -200,7 +191,7 @@ class FormAdd extends React.Component {
       if (!file) return Promise.resolve()
 
       const { name } = file
-      return restaurantImgRef.child(name).put(file).then(snapshot => {
+      return onUpload(name, file).then(snapshot => {
         const src = snapshot.downloadURL
         const img = {
           src,

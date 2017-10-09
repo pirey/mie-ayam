@@ -110,10 +110,11 @@ class FormEdit extends React.Component {
     }))
   }
   handleChangeImg(e) {
+    const { onUpload } = this.props
     const input = e.target
     if (input.files && input.files[0]) {
       const { name } = input.files[0]
-      restaurantImgRef.child(name).put(input.files[0]).then(snapshot => {
+      onUpload(name, input.files[0]).then(snapshot => {
         const url = snapshot.downloadURL
         const img = {
           src: url,
@@ -134,10 +135,11 @@ class FormEdit extends React.Component {
     this.setFormState({ menus })
   }
   handleChangeMenuImg = idx => e => {
+    const { onUpload } = this.props
     const input = e.target
     if (input.files && input.files[0]) {
       const { name } = input.files[0]
-      restaurantImgRef.child(name).put(input.files[0]).then(snapshot => {
+      onUpload(name, input.files[0]).then(snapshot => {
         const url = snapshot.downloadURL
         const img = {
           src: url,
