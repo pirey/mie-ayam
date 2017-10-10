@@ -228,7 +228,7 @@ input:focus {
     max-width: 100%;
 }
 #form-restaurant .media-body {
-    width: 55%;
+    /* width: 55%; */
     box-sizing: border-box;
     /* padding-top: 25px; */
 }
