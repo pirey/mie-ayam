@@ -287,7 +287,7 @@ input:focus {
     margin: 10px 10px 0 0;
 }
 .thumb-buttons:hover {
-    background: rgba(255,255,255,.1);
+    background: rgba(100,100,100,.1);
 }
 .thumb-buttons button {
     width: 30px;
