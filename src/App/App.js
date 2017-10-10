@@ -7,6 +7,7 @@ import {
 import * as Modes           from '../modes'
 import Navbar               from './Navbar'
 import LocationSelector     from './LocationSelector'
+import uuid                 from 'uuid/v1'
 
 class App extends React.Component {
   state = {
@@ -30,10 +31,13 @@ class App extends React.Component {
     this.handleResetMode      = this.handleResetMode.bind(this)
     this.handleSelectionMode  = this.handleSelectionMode.bind(this)
 
+    this.handlePartialUpdate  = this.handlePartialUpdate.bind(this)
     this.handleUpload         = this.handleUpload.bind(this)
     this.handleDeleteFile     = this.handleDeleteFile.bind(this)
+    this.handleDeleteRef      = this.handleDeleteRef.bind(this)
 
     this.handleCreateLocation = this.handleCreateLocation.bind(this)
+    this.handleCreateMenu     = this.handleCreateMenu.bind(this)
     this.handleUpdateLocation = this.handleUpdateLocation.bind(this)
     this.handleRemoveLocation = this.handleRemoveLocation.bind(this)
   }
@@ -42,9 +46,12 @@ class App extends React.Component {
     this.handleRestaurantData()
   }
   handleUpload(file, customName) {
-    if (!file) return Promise.resolve()
+    if (!file) return Promise.resolve({
+      src: '',
+      ref: '',
+    })
 
-    const name = customName || file.name
+    const name = customName || uuid() + file.name
     return restaurantImgRef.child(name).put(file).then(snapshot => {
       const src = snapshot.downloadURL
       const img = {
@@ -70,8 +77,19 @@ class App extends React.Component {
       .then(ps => Promise.all(ps))
       .then(this.handleResetMode)
   }
-  handlePartialUpdate = id => partialUpdate => {
-    restaurantsRef.child(id).update(partialUpdate)
+  handleCreateMenu(id, menu) {
+    console.log('create menu', id, menu)
+    const newMenu = restaurantsRef.child(id).child('menus').push()
+    return newMenu.set(menu).then(_ => ({
+      id: newMenu.key,
+      ...menu,
+    }))
+  }
+  handlePartialUpdate(ref, partialUpdate) {
+    return restaurantsRef.child(ref).update(partialUpdate)
+  }
+  handleDeleteRef(ref) {
+    return restaurantsRef.child(ref).remove()
   }
   handleUpdateLocation(restaurant) {
     const { id: restaurantId, name, img, latLng, menus } = restaurant
@@ -215,8 +233,10 @@ class App extends React.Component {
           onRemoveLocation={this.handleRemoveLocation}
           onUpdateLocation={this.handleUpdateLocation}
           onCreateLocation={this.handleCreateLocation}
+          onCreateMenu={this.handleCreateMenu}
           onUpload={this.handleUpload}
           onDeleteFile={this.handleDeleteFile}
+          onDeleteRef={this.handleDeleteRef}
         />
         <Navbar mode={mode} onCancel={this.handleResetMode} onToggle={this.handleToggleSidebar} />
         {mode === Modes.SELECT_LOCATION && <LocationSelector onClick={this.handleChooseLocation} />}
