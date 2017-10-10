@@ -31,6 +31,7 @@ class App extends React.Component {
     this.handleSelectionMode  = this.handleSelectionMode.bind(this)
 
     this.handleUpload         = this.handleUpload.bind(this)
+    this.handleDeleteFile     = this.handleDeleteFile.bind(this)
 
     this.handleCreateLocation = this.handleCreateLocation.bind(this)
     this.handleUpdateLocation = this.handleUpdateLocation.bind(this)
@@ -42,6 +43,9 @@ class App extends React.Component {
   }
   handleUpload(ref, file) {
     return restaurantImgRef.child(ref).put(file)
+  }
+  handleDeleteFile(ref) {
+    return restaurantImgRef.child(ref).delete()
   }
   handleCreateLocation({ name, img, menus }) {
     const { lat, lng } = this.state.selectedLocation
@@ -202,6 +206,7 @@ class App extends React.Component {
           onUpdateLocation={this.handleUpdateLocation}
           onCreateLocation={this.handleCreateLocation}
           onUpload={this.handleUpload}
+          onDeleteFile={this.handleDeleteFile}
         />
         <Navbar mode={mode} onCancel={this.handleResetMode} onToggle={this.handleToggleSidebar} />
         {mode === Modes.SELECT_LOCATION && <LocationSelector onClick={this.handleChooseLocation} />}

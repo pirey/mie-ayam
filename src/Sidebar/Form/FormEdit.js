@@ -1,6 +1,5 @@
 import React from 'react'
 import validate from './validate'
-import { restaurantImgRef } from '../../lib/firebase'
 import FormRestaurant from './FormRestaurant'
 
 const MAX_MENU = 7
@@ -83,9 +82,9 @@ class FormEdit extends React.Component {
     })
   }
   handleDeleteImg() {
+    const { onDeleteFile } = this.props
     const ref = this.state.form.img.ref
-    console.log('deleting img', ref)
-    restaurantImgRef.child(ref).delete().then(_ => {
+    onDeleteFile(ref).then(_ => {
       const img = {
         ref: '',
         src: '',
@@ -94,9 +93,10 @@ class FormEdit extends React.Component {
     })
   }
   handleDeleteMenuImg = idx => () => {
+    const { onDeleteFile } = this.props
     const ref = this.state.form.menus[idx].img.ref
     console.log('deleting image', ref)
-    restaurantImgRef.child(ref).delete().then(_ => {
+    onDeleteFile(ref).then(_ => {
       const img = {
         ref: '',
         src: '',
