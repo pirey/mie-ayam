@@ -267,9 +267,23 @@ input:focus {
     border-radius: 4px;
     overflow: hidden;
 }
+.loader {
+    position: absolute;
+    display: flex;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    justify-content: space-evenly;
+    align-items: center;
+    background: rgba(0,0,0,.8);
+}
+.loader .fa-spin {
+    color: white;
+}
 .thumb-buttons {
     position: absolute;
-    top: calc(50% - 15px);
+    /* top: calc(50% - 15px); */
     display: flex;
     top: 0;
     left: 0;
@@ -320,6 +334,7 @@ input:focus {
 
 /* input image */
 .input-img {
+    position: relative;
     display: block;
     background: rgba(150,150,150,.1);
     padding: 20px;

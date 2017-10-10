@@ -8,6 +8,10 @@ const assign = (a,b) => Object.assign({}, a, b)
 
 // define init state here, so it can be reused
 const initialState = {
+  loading: {
+    img: false,
+    menus: []
+  },
   form: {
     name: '',
     img: {
@@ -34,10 +38,16 @@ const initialState = {
 class FormEdit extends React.Component {
   constructor({ restaurant }) {
     super()
+    console.log('restaurant', restaurant)
     this.state = {
+      loading: {
+        img: false,
+        menus: Array(restaurant.menus.length).fill(false),
+      },
       form: assign(initialState.form, restaurant),
       errors: initialState.errors,
     }
+    this.isMenuLoading = this.isMenuLoading.bind(this)
 
     this.handleChangeImg = this.handleChangeImg.bind(this)
     this.handleChangeInput = this.handleChangeInput.bind(this)
@@ -79,6 +89,32 @@ class FormEdit extends React.Component {
       errors: { ...initialState.errors }
     }))
   }
+  isMenuLoading(i) {
+    return this.state.loading.menus[i]
+  }
+  addMenuLoading() {
+    const menus = this.state.loading.menus.concat(false)
+    this.setNState('loading', {
+      menus
+    })
+  }
+  removeMenuLoading(idx) {
+    const menus = this.state.loading.menus.filter((m, i) => i !== idx)
+    this.setNState('loading', {
+      menus,
+    })
+  }
+  setLoading(isLoading) {
+    this.setNState('loading', {
+      img: isLoading,
+    })
+  }
+  setMenuLoading(idx, isLoading) {
+    const menus = this.state.loading.menus.map((m, i) => i === idx ? isLoading : m)
+    this.setNState('loading', {
+      menus,
+    })
+  }
   handleDelete(id) {
     const { onDelete, onDeleteFile } = this.props
 
@@ -114,6 +150,7 @@ class FormEdit extends React.Component {
         this.setNState('form', {
           menus: menus.concat(menu)
         })
+        this.addMenuLoading()
       })
     }
   }
@@ -124,6 +161,7 @@ class FormEdit extends React.Component {
     const { ref }          = this.state.form.menus[idx].img
     const menus = this.state.form.menus.filter((m, i) => idx !== i)
     const deleteIfExists = ref => ref ? onDeleteFile(ref) : Promise.resolve()
+    this.setMenuLoading(idx, true)
     deleteIfExists(ref)
       .then(_ => _, _ => Promise.resolve()) // ignore error (usually non existent ref)
       .then(_ => onDeleteRef(`${id}/menus/${menuId}`))
@@ -131,6 +169,7 @@ class FormEdit extends React.Component {
         this.resetErrors()
         this.setNState('form', { menus })
       })
+      .then(_ => this.removeMenuLoading(idx))
   }
   handleDeleteImg() {
     const { onDeleteFile, onPartialUpdate } = this.props
@@ -140,9 +179,11 @@ class FormEdit extends React.Component {
       ref: '',
       src: '',
     }
+    this.setLoading(true)
     onDeleteFile(ref)
       .then(_ => onPartialUpdate(id, { img }))
       .then(_ => this.setNState('form', { img }))
+      .then(_ => this.setLoading(false))
   }
   handleDeleteMenuImg = idx => () => {
     const { onDeleteFile, onPartialUpdate } = this.props
@@ -153,9 +194,11 @@ class FormEdit extends React.Component {
       ref: '',
       src: '',
     }
+    this.setMenuLoading(idx, true)
     onDeleteFile(ref)
       .then(_ => onPartialUpdate(`${id}/menus/${menuId}`, { img }))
       .then(_ => this.setMenuState({ idx, img }))
+      .then(_ => this.setMenuLoading(idx, false))
   }
   handleChangeImg(e) {
     const { onUpload, onPartialUpdate, onDeleteFile } = this.props
@@ -168,6 +211,7 @@ class FormEdit extends React.Component {
     const { ref } = this.state.form.img
     const deleteIfExists = ref => ref ? onDeleteFile(ref) : Promise.resolve()
 
+    this.setLoading(true)
     deleteIfExists(ref)
       .then(_ => _, _ => Promise.resolve()) // ignore error when deleting old img
       .then(_ => onUpload(file))
@@ -175,6 +219,7 @@ class FormEdit extends React.Component {
         return onPartialUpdate(id, { img }).then(_ => img)
       })
       .then(img => this.setNState('form', { img }))
+      .then(_ => this.setLoading(false))
   }
   handleChangeMenuImg = idx => e => {
     const { onUpload, onPartialUpdate, onDeleteFile } = this.props
@@ -187,6 +232,7 @@ class FormEdit extends React.Component {
     const { id: menuId } = this.state.form.menus[idx]
     const { ref }        = this.state.form.menus[idx].img
     const deleteIfExists = ref => ref ? onDeleteFile(ref) : Promise.resolve()
+    this.setMenuLoading(idx, true)
     deleteIfExists(ref)
       .then(_ => _, _ => Promise.resolve()) // ignore error when deleting old img
       .then(_ => onUpload(file))
@@ -194,6 +240,7 @@ class FormEdit extends React.Component {
         return onPartialUpdate(`${id}/menus/${menuId}`, { img }).then(_ => img)
       })
       .then(img => this.setMenuState({ idx, img }))
+      .then(_ => this.setMenuLoading(idx, false))
   }
   handleChangeMenuInput = (idx, field) => e => {
     const { rawValue, value } = e.target // get raw value from cleave.js
@@ -220,6 +267,8 @@ class FormEdit extends React.Component {
       <FormRestaurant
         form={this.state.form}
         errors={this.state.errors}
+        loading={this.state.loading}
+        isMenuLoading={this.isMenuLoading}
         onDelete={this.handleDelete}
         onClose={this.props.onClose}
         handleAddMenu={this.handleAddMenu}

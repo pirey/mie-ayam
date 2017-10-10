@@ -7,6 +7,8 @@ const FormRestaurant = (props) => {
   const {
     form,
     errors,
+    loading,
+    isMenuLoading,
     onDelete,
     onClose,
     handleAddMenu,
@@ -40,6 +42,7 @@ const FormRestaurant = (props) => {
             <InputThumb
               id="resto-img"
               src={img.src}
+              isLoading={loading.img}
               onChange={handleChangeImg}
               iconPosition="top-right"
               onDelete={handleDeleteImg}
@@ -49,6 +52,7 @@ const FormRestaurant = (props) => {
             />
           </div>
           <Menus
+            isMenuLoading={isMenuLoading}
             menus={menus}
             errors={errors.menus}
             handleChangeMenuImg={handleChangeMenuImg}
