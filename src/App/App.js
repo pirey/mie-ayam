@@ -41,8 +41,18 @@ class App extends React.Component {
     this.getCurrentPosition()
     this.handleRestaurantData()
   }
-  handleUpload(ref, file) {
-    return restaurantImgRef.child(ref).put(file)
+  handleUpload(file, customName) {
+    if (!file) return Promise.resolve()
+
+    const name = customName || file.name
+    return restaurantImgRef.child(name).put(file).then(snapshot => {
+      const src = snapshot.downloadURL
+      const img = {
+        src,
+        ref: name,
+      }
+      return img
+    })
   }
   handleDeleteFile(ref) {
     return restaurantImgRef.child(ref).delete()

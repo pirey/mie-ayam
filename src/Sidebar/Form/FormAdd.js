@@ -1,18 +1,9 @@
 import React from 'react'
 import validate from './validate'
 import FormRestaurant from './FormRestaurant'
+import { readFile } from '../../lib/helpers'
 
 const MAX_MENU = 7
-
-const readFile = file =>
-  new Promise((res, rej) => {
-    const reader = new FileReader()
-    reader.onload = e => {
-      const src = e.target.result
-      res(src)
-    }
-    reader.readAsDataURL(file)
-  })
 
 // define init state here, so it can be reused
 const initialState = {
@@ -44,6 +35,8 @@ const menuState = {
   },
 }
 
+const noop = () => {}
+
 class FormAdd extends React.Component {
   constructor({ restaurant }) {
     super()
@@ -65,7 +58,7 @@ class FormAdd extends React.Component {
     console.log('next state', nextState)
   }
   /* set nested state */
-  setNState(field, newState) {
+  setNState(field, newState, cb = noop) {
     this.setState(prev => {
       return {
         [field]: {
@@ -73,7 +66,7 @@ class FormAdd extends React.Component {
           ...newState,
         }
       }
-    })
+    }, cb)
   }
   handleChangeInput(e) {
     const { name, value } = e.target
@@ -150,7 +143,7 @@ class FormAdd extends React.Component {
       })
     })
   }
-  setMenuImgState({ idx, img }) {
+  setMenuImgState({ idx, img }, cb = noop) {
     const menus = this.state.form.menus.map((m, i) => {
       const withImg = {
         ...m,
@@ -158,7 +151,7 @@ class FormAdd extends React.Component {
       }
       return (i === idx) ? withImg : m
     })
-    this.setNState('form', { menus })
+    this.setNState('form', { menus }, cb)
   }
   handleChangeMenuInput = (idx, field) => e => {
     const { rawValue, value } = e.target // get raw value from cleave.js
@@ -172,39 +165,19 @@ class FormAdd extends React.Component {
   }
   uploadQueues() {
     const { onUpload } = this.props
-    const uploadImg = file => {
-      if (!file) return Promise.resolve()
 
-      const { name } = file
-      return onUpload(name, file).then(snapshot => {
-        const src = snapshot.downloadURL
-        const img = {
-          src,
-          ref: name,
-        }
-        this.setNState('form', { img })
-      })
-    }
+    const uploadImg = file =>
+      onUpload(file).then(img =>
+        this.setNState('form', { img }))
 
-    const uploadMenuImg = queue => {
-      const { idx, file } = queue
-      if (!file) return Promise.resolve()
-
-      const { name } = file
-      return onUpload(name, file).then(snapshot => {
-        const src = snapshot.downloadURL
-        const img = {
-          src,
-          ref: name,
-        }
-        this.setMenuImgState({ idx, img })
-      })
-    }
+    const uploadMenuImg = (file, idx) =>
+      onUpload(file).then(img =>
+        this.setMenuImgState({ idx, img }))
 
     const queues = this.state.queues
     const { img, menus } = queues
     const imgTask = uploadImg(img)
-    const menuTasks = menus.map(m => uploadMenuImg(m))
+    const menuTasks = menus.map(uploadMenuImg)
 
     const ps = [imgTask, ...menuTasks]
     return Promise.all(ps).then(_ => {
