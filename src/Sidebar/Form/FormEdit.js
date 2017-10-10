@@ -22,7 +22,7 @@ const initialState = {
   }
 }
 
-const menuState = {
+const menuItem = {
   name: '',
   price: '',
   img: {
@@ -34,11 +34,8 @@ const menuState = {
 class FormEdit extends React.Component {
   constructor({ restaurant }) {
     super()
-    const form = restaurant ? assign(initialState.form, restaurant) : initialState.form
-    console.log('form', form)
-    console.log('restaurant', restaurant)
     this.state = {
-      form,
+      form: assign(initialState.form, restaurant),
       errors: initialState.errors,
     }
 
@@ -57,72 +54,16 @@ class FormEdit extends React.Component {
     if (restaurant.id !== this.state.form.id)
       this.setState({ form: restaurant })
   }
-  setFormState(newState) {
-    this.setState(prev => ({
-      form: {
-        ...prev.form,
-        ...newState,
-      }
-    }))
-  }
-  handleChangeInput(e) {
-    const { name, value } = e.target
-    this.setFormState({
-      [name]: value,
-    })
-  }
-  handleAddMenu() {
-    const menus = this.state.form.menus.concat([menuState])
-    if (menus.length <= MAX_MENU) this.setFormState({ menus })
-  }
-  handleRemoveMenu = idx => () => {
-    this.resetErrors()
-    this.setFormState({
-      menus: this.state.form.menus.filter((m, i) => idx !== i),
-    })
-  }
-  handleDeleteImg() {
-    const { onDeleteFile } = this.props
-    const ref = this.state.form.img.ref
-    onDeleteFile(ref).then(_ => {
-      const img = {
-        ref: '',
-        src: '',
-      }
-      this.setFormState({ img })
-    })
-  }
-  handleDeleteMenuImg = idx => () => {
-    const { onDeleteFile } = this.props
-    const ref = this.state.form.menus[idx].img.ref
-    console.log('deleting image', ref)
-    onDeleteFile(ref).then(_ => {
-      const img = {
-        ref: '',
-        src: '',
-      }
-      this.setMenuImgState({ idx, img })
-    })
-  }
-  resetErrors(field) {
-    this.setState(_ => ({
-      errors: { ...initialState.errors }
-    }))
-  }
-  handleChangeImg(e) {
-    const { onUpload } = this.props
-    const input = e.target
-    if (input.files && input.files[0]) {
-      const { name } = input.files[0]
-      onUpload(name, input.files[0]).then(snapshot => {
-        const url = snapshot.downloadURL
-        const img = {
-          src: url,
-          ref: name,
+  /* set nested state */
+  setNState(field, newState) {
+    this.setState(prev => {
+      return {
+        [field]: {
+          ...prev[field],
+          ...newState,
         }
-        this.setFormState({ img })
-      })
-    }
+      }
+    })
   }
   setMenuImgState({ idx, img }) {
     const menus = this.state.form.menus.map((m, i) => {
@@ -132,22 +73,100 @@ class FormEdit extends React.Component {
       }
       return (i === idx) ? withImg : m
     })
-    this.setFormState({ menus })
+    this.setNState('form', { menus })
+  }
+  resetErrors(field) {
+    this.setState(_ => ({
+      errors: { ...initialState.errors }
+    }))
+  }
+  handleChangeInput(e) {
+    const { name, value } = e.target
+    this.setNState('form', {
+      [name]: value,
+    })
+  }
+  handleAddMenu() {
+    const menus = this.state.form.menus.concat([menuItem])
+    if (menus.length <= MAX_MENU) this.setNState('form', { menus })
+  }
+  handleRemoveMenu = idx => () => {
+    const { onDeleteFile, onDeleteRef } = this.props
+    const { id }           = this.state.form
+    const { id: menuId }   = this.state.form.menus[idx]
+    const { ref }          = this.state.form.menus[idx].img
+    const menus = this.state.form.menus.filter((m, i) => idx !== i)
+    const deleteIfExists = ref => ref ? onDeleteFile(ref) : Promise.resolve()
+    deleteIfExists(ref)
+      .then(_ => _, _ => Promise.resolve()) // ignore error (usually non existent ref)
+      .then(_ => onDeleteRef(`${id}/menus/${menuId}`))
+      .then(_ => {
+        this.resetErrors()
+        this.setNState('form', { menus })
+      })
+  }
+  handleDeleteImg() {
+    const { onDeleteFile, onPartialUpdate } = this.props
+    const { id } = this.state.form
+    const { ref } = this.state.form.img
+    const img = {
+      ref: '',
+      src: '',
+    }
+    onDeleteFile(ref)
+      .then(_ => onPartialUpdate(id, { img }))
+      .then(_ => this.setNState('form', { img }))
+  }
+  handleDeleteMenuImg = idx => () => {
+    const { onDeleteFile, onPartialUpdate } = this.props
+    const { id }           = this.state.form
+    const { id: menuId }   = this.state.form.menus[idx]
+    const { ref }          = this.state.form.menus[idx].img
+    const img = {
+      ref: '',
+      src: '',
+    }
+    onDeleteFile(ref)
+      .then(_ => onPartialUpdate(`${id}/menus/${menuId}`, { img }))
+      .then(_ => this.setMenuImgState({ idx, img }))
+  }
+  handleChangeImg(e) {
+    const { onUpload, onPartialUpdate, onDeleteFile } = this.props
+    const input   = e.target
+
+    if (!input.files) return
+
+    const file = input.files[0]
+    const { id }  = this.state.form
+    const { ref } = this.state.form.img
+    const deleteIfExists = ref => ref ? onDeleteFile(ref) : Promise.resolve()
+
+    deleteIfExists(ref)
+      .then(_ => _, _ => Promise.resolve()) // ignore error when deleting old img
+      .then(_ => onUpload(file))
+      .then(img => {
+        return onPartialUpdate(id, { img }).then(_ => img)
+      })
+      .then(img => this.setNState('form', { img }))
   }
   handleChangeMenuImg = idx => e => {
-    const { onUpload } = this.props
-    const input = e.target
-    if (input.files && input.files[0]) {
-      const { name } = input.files[0]
-      onUpload(name, input.files[0]).then(snapshot => {
-        const url = snapshot.downloadURL
-        const img = {
-          src: url,
-          ref: name,
-        }
-        this.setMenuImgState({ idx, img })
+    const { onUpload, onPartialUpdate, onDeleteFile } = this.props
+    const input          = e.target
+
+    if (!input.files) return
+
+    const file = input.files[0]
+    const { id }         = this.state.form
+    const { id: menuId } = this.state.form.menus[idx]
+    const { ref }        = this.state.form.menus[idx].img
+    const deleteIfExists = ref => ref ? onDeleteFile(ref) : Promise.resolve()
+    deleteIfExists(ref)
+      .then(_ => _, _ => Promise.resolve()) // ignore error when deleting old img
+      .then(_ => onUpload(file))
+      .then(img => {
+        return onPartialUpdate(`${id}/menus/${menuId}`, { img }).then(_ => img)
       })
-    }
+      .then(img => this.setMenuImgState({ idx, img }))
   }
   handleChangeMenuInput = (idx, field) => e => {
     const { rawValue, value } = e.target // get raw value from cleave.js
@@ -155,7 +174,7 @@ class FormEdit extends React.Component {
       if (i !== idx) return m
       return { ...m, [field]: rawValue || value }
     })
-    this.setFormState({ menus })
+    this.setNState('form', { menus })
   }
   handleSubmit(e) {
     e.preventDefault()
