@@ -212,9 +212,11 @@ input:focus {
 }
 
 #form-restaurant .resto-name {
-    font-size: 1.7em;
     margin-top: 0;
     margin-bottom: 10px;
+}
+#form-restaurant .resto-name input {
+    font-size: 1.7em;
 }
 
 #form-restaurant .resto-thumb {
@@ -258,6 +260,24 @@ input:focus {
 
 #form-restaurant label.form-group {
     display: block;
+}
+
+#form-restaurant .btn-add-menu {
+    border: none;
+    background: #947858;
+    border-bottom: 3px solid #543d23;
+    border-radius: 4px;
+    color: white;
+}
+#form-restaurant .btn-add-menu:active {
+    border: none;
+    transform: translateY(4px);
+    box-shadow: none;
+    outline: none;
+}
+#form-restaurant .btn-add-menu:active:focus,
+#form-restaurant .btn-add-menu:focus {
+    outline: none;
 }
 
 .thumb {

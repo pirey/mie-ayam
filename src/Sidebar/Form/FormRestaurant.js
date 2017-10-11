@@ -66,7 +66,7 @@ const FormRestaurant = (props) => {
           />
           {
             menus.length < MAX_MENU && <div className="form-group">
-              <button type="button" onClick={handleAddMenu} className="btn btn-link btn-block">
+              <button type="button" onClick={handleAddMenu} className="btn btn-block btn-add-menu">
                 <i className="fa fa-plus"></i>&nbsp;Tambah menu
               </button>
             </div>
