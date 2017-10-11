@@ -87,6 +87,12 @@ body {
 .btn-link.red:active {
     color: #c9302c;
 }
+.trans-bg:hover,
+.trans-bg:active,
+.trans-bg:focus,
+.trans-bg:active:focus {
+    background: transparent;
+}
 
 .btn-default {
     background: #ddd;
@@ -156,6 +162,8 @@ input:focus {
     border-bottom: 1px solid #dddddd;
     color: white;
     transition: all .5s ease;
+    box-shadow: 0 1px 4px 4px rgba(0,0,0,.1);
+    border-bottom: none;
 }
 
 #navbar:hover {
