@@ -2,6 +2,11 @@ import React from 'react'
 import Menus from './Menus'
 import InputThumb from './InputThumb'
 
+const isAnyLoading = ({ img, menus }) => {
+  const all = menus.concat(img)
+  return all.some(x => x === true)
+}
+
 const FormRestaurant = (props) => {
   const MAX_MENU = 7
   const {
@@ -25,9 +30,9 @@ const FormRestaurant = (props) => {
   return (
     <div className="panel panel-default">
       <div className="panel-heading">
-        <button onClick={onClose} className="btn btn-link btn-lg"><i className="fa fa-chevron-left"></i></button>
-        <button form="form-restaurant" type="submit" className="btn btn-link btn-lg primary"><i className="fa fa-check"></i> Simpan</button>
-        {onDelete && <button onClick={() => onDelete(id)} className="btn btn-link btn-lg red"><i className="fa fa-trash-o"></i>&nbsp;Hapus</button>}
+        <button disabled={isAnyLoading(loading)} onClick={onClose} className="btn btn-link btn-lg"><i className="fa fa-chevron-left"></i></button>
+        <button disabled={isAnyLoading(loading)} form="form-restaurant" type="submit" className="btn btn-link btn-lg primary"><i className="fa fa-check"></i> Simpan</button>
+        {onDelete && <button disabled={isAnyLoading(loading)} onClick={() => onDelete(id)} className="btn btn-link btn-lg red"><i className="fa fa-trash-o"></i>&nbsp;Hapus</button>}
       </div>
       <div className="panel-body">
         <form onSubmit={handleSubmit} id="form-restaurant">
