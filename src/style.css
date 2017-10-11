@@ -327,6 +327,9 @@ input:focus {
 .thumb-buttons:hover {
     background: rgba(100,100,100,.1);
 }
+.thumb-buttons button a {
+    color: white;
+}
 .thumb-buttons button {
     width: 30px;
     height: 30px;
@@ -437,6 +440,10 @@ input:focus {
     border-radius: 0;
     background: url('./bg.png');
     background-size: 100%;
+}
+
+#sidebar .panel-body {
+    padding: 10px;
 }
 
 #sidebar.active {

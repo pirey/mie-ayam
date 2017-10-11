@@ -13,7 +13,7 @@ const Thumb = ({ id, src, onDelete, onChange, onPreview, isLoading, position = '
         <i className="fa fa-circle-o-notch fa-3x fa-spin"></i>
       </div>
       <div className={`thumb-buttons ${pos} ${isLoading ? 'hidden' : ''}`}>
-        <button type="button" onClick={onPreview}><i className="fa fa-eye"></i></button>
+        <button type="button"><a href={src}><i className="fa fa-eye"></i></a></button>
         <button type="button">
           <label htmlFor={id}>
             <i className="fa fa-camera"></i>
