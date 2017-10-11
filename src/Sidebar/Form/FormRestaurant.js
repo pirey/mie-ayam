@@ -8,7 +8,6 @@ const FormRestaurant = (props) => {
     form,
     errors,
     loading,
-    isMenuLoading,
     onDelete,
     onClose,
     handleAddMenu,
@@ -52,7 +51,7 @@ const FormRestaurant = (props) => {
             />
           </div>
           <Menus
-            isMenuLoading={isMenuLoading}
+            loading={loading.menus}
             menus={menus}
             errors={errors.menus}
             handleChangeMenuImg={handleChangeMenuImg}

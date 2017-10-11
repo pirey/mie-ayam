@@ -3,7 +3,7 @@ import Cleave from 'cleave.js/react'
 import InputThumb from './InputThumb'
 
 const Menus = (props) => {
-  const { menus, errors, handleChangeMenuImg, handleDeleteMenuImg, handleChangeMenuInput, handleRemoveMenu, isMenuLoading } = props
+  const { menus, errors, handleChangeMenuImg, handleDeleteMenuImg, handleChangeMenuInput, handleRemoveMenu, loading } = props
   return (
     <ul className="resto-menu media-list">
       {menus.map((menu, i) => (
@@ -11,7 +11,7 @@ const Menus = (props) => {
           <div className="media-left">
             <InputThumb
               id={`thumb-${i}`}
-              isLoading={isMenuLoading(i)}
+              isLoading={loading[i]}
               src={menu.img.src}
               onChange={handleChangeMenuImg(i)}
               onDelete={handleDeleteMenuImg(i)}
@@ -37,7 +37,7 @@ const Menus = (props) => {
               />
               {errors[i] && errors[i].price && errors[i].price.map((e, k) => <small key={k} className="help-block">{e}</small>)}
             </label>
-            <button type="button" onClick={handleRemoveMenu(i)} className="btn btn-default btn-block" disabled={isMenuLoading(i)}>
+            <button type="button" onClick={handleRemoveMenu(i)} className="btn btn-default btn-block" disabled={loading[i]}>
               <i className="fa fa-trash text-danger"></i>
             </button>
           </div>

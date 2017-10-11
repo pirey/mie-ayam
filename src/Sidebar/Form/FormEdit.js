@@ -47,7 +47,6 @@ class FormEdit extends React.Component {
       form: assign(initialState.form, restaurant),
       errors: initialState.errors,
     }
-    this.isMenuLoading = this.isMenuLoading.bind(this)
 
     this.handleChangeImg = this.handleChangeImg.bind(this)
     this.handleChangeInput = this.handleChangeInput.bind(this)
@@ -88,9 +87,6 @@ class FormEdit extends React.Component {
     this.setState(_ => ({
       errors: { ...initialState.errors }
     }))
-  }
-  isMenuLoading(i) {
-    return this.state.loading.menus[i]
   }
   addMenuLoading() {
     const menus = this.state.loading.menus.concat(false)
@@ -268,7 +264,6 @@ class FormEdit extends React.Component {
         form={this.state.form}
         errors={this.state.errors}
         loading={this.state.loading}
-        isMenuLoading={this.isMenuLoading}
         onDelete={this.handleDelete}
         onClose={this.props.onClose}
         handleAddMenu={this.handleAddMenu}

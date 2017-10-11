@@ -8,6 +8,10 @@ const MAX_MENU = 7
 // define init state here, so it can be reused
 const initialState = {
   // store files to be uploaded onSubmit
+  loading: {
+    img: false,
+    menus: [],
+  },
   queues: {
     img: null,
     menus: [],
@@ -84,20 +88,25 @@ class FormAdd extends React.Component {
   }
   handleAddMenu() {
     const menus = this.state.form.menus.concat([menuItem])
-    const menuQueues = this.state.queues.menus.concat(null)
+    const queues = this.state.queues.menus.concat(null)
+    const loading = this.state.loading.menus.concat(false)
     if (menus.length <= MAX_MENU) {
       this.setNState('form', { menus })
-      this.setNState('queues', { menus: menuQueues })
+      this.setNState('queues', { menus: queues })
+      this.setNState('loading', { menus: loading })
     }
   }
   handleRemoveMenu = idx => () => {
     this.resetErrors()
-    this.setNState('queues', {
-      menus: this.state.queues.menus.filter((m, i) => idx !== i),
-    })
-    this.setNState('form', {
-      menus: this.state.form.menus.filter((m, i) => idx !== i),
-    })
+
+    const not = (m, i) => idx !== i
+    const menus = this.state.form.menus.filter(not)
+    const queues = this.state.queues.menus.filter(not)
+    const loading = this.state.loading.menus.filter(not)
+
+    this.setNState('form', { menus })
+    this.setNState('queues', { menus: queues })
+    this.setNState('loading', { menus: loading })
   }
   handleDeleteImg() {
     this.setNState('queues', {
@@ -173,6 +182,10 @@ class FormAdd extends React.Component {
     const menuTasks = menus.map(uploadMenuImg)
 
     const ps = [imgTask, ...menuTasks]
+    this.setNState('loading', {
+      img: true,
+      menus: this.state.loading.menus.map(_ => true)
+    })
     return Promise.all(ps).then(_ => {
       // all the images should have their ref and src updated
       return this.state.form
@@ -195,6 +208,7 @@ class FormAdd extends React.Component {
       <FormRestaurant
         form={this.state.form}
         errors={this.state.errors}
+        loading={this.state.loading}
         onDelete={this.props.onDelete}
         onClose={this.props.onClose}
         handleAddMenu={this.handleAddMenu}

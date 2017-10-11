@@ -7,13 +7,13 @@ const InputImg = ({ id, name, onChange, isLoading, size = 'm', classNames = '', 
   }
 
   return (
-    <label htmlFor={id} className={`input-img text-center ${classNames}`}>
+    <label htmlFor={id} className={`input-img text-center ${classNames} ${isLoading ? 'is-loading' : ''}`}>
       <div className={`loader ${isLoading ? '' : 'hidden'}`}>
         <i className="fa fa-circle-o-notch fa-3x fa-spin"></i>
       </div>
       {icon[size]}
       {!isLoading && label && <span className="input-label">{label}</span>}
-      <input id={id} type="file" className="hidden" onChange={onChange} />
+      {!isLoading && <input id={id} type="file" className="hidden" onChange={onChange} />}
     </label>
   )
 }

@@ -353,6 +353,9 @@ input:focus {
 .input-img:hover {
     border-color: #947858;
 }
+.input-img.is-loading:hover {
+    border-color: transparent;
+}
 .input-img .input-label {
     /* display: none; */
     display: block;
