@@ -119,7 +119,6 @@ body {
 input {
     width: 100%;
     border: none;
-    padding-bottom: 8px;
     padding: 8px;
     border-radius: 4px;
     background: transparent;
@@ -250,12 +249,16 @@ input:focus {
 
 #form-restaurant .form-group.has-error {
     border: 3px solid rgba(214, 108, 76, 1);
-    border-radius: 8px;
+    border-radius: 4px;
     padding: 10px;
 }
 
 #form-restaurant .form-group .help-block {
+    margin-bottom: 5px;
     font-weight: bold;
+}
+#form-restaurant .form-group .help-block:last-child {
+    margin-bottom: 0;
 }
 
 #form-restaurant label.form-group {
@@ -268,6 +271,9 @@ input:focus {
     border-bottom: 3px solid #543d23;
     border-radius: 4px;
     color: white;
+}
+#form-restaurant .btn-add-menu:hover {
+    background: #a78660;
 }
 #form-restaurant .btn-add-menu:active {
     border: none;
