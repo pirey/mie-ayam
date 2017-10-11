@@ -1,4 +1,5 @@
 import React from 'react'
+import Img from './Img'
 
 const Thumb = ({ id, src, onDelete, onChange, onPreview, isLoading, position = 'center' }) => {
   const pos = ({
@@ -21,7 +22,7 @@ const Thumb = ({ id, src, onDelete, onChange, onPreview, isLoading, position = '
         </button>
         <button type="button" onClick={onDelete}><i className="fa fa-trash"></i></button>
       </div>
-      <img className="media-object" src={src} alt="mie ayam" />
+      <Img className="media-object" src={src} alt="mie ayam" />
     </div>
   )
 }

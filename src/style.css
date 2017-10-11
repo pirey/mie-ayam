@@ -7,6 +7,9 @@ html, body, #root {
 body {
     font-family: 'Roboto', sans-serif;
 }
+.invicible {
+    opacity: 0;
+}
 
 .f24 {
     font-size: 24px;
@@ -293,20 +296,6 @@ input:focus {
     border-radius: 4px;
     overflow: hidden;
 }
-.loader {
-    position: absolute;
-    display: flex;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    justify-content: space-evenly;
-    align-items: center;
-    background: rgba(0,0,0,.8);
-}
-.loader .fa-spin {
-    color: rgba(255,255,255,.7);
-}
 .thumb-buttons {
     position: absolute;
     /* top: calc(50% - 15px); */
@@ -394,6 +383,31 @@ input:focus {
     transform: translateY(0);
     opacity: 1;
     /* display: block; */
+}
+
+.preloader {
+    position: relative;
+    width: 100%;
+    padding: 20px;
+}
+.preloader-overlay,
+.loader {
+    position: absolute;
+    display: flex;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    justify-content: space-evenly;
+    align-items: center;
+    background: rgba(0,0,0,.8);
+}
+/* .preloader-overlay { */
+/*     padding: 20px;   */
+/* }                    */
+.preloader-overlay .fa-spin,
+.loader .fa-spin {
+    color: rgba(255,255,255,.7);
 }
 
 /* */
