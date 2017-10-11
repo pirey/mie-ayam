@@ -111,6 +111,12 @@ class FormEdit extends React.Component {
       menus,
     })
   }
+  setAllLoading() {
+    this.setNState('loading', {
+      img: true,
+      menus: this.state.loading.menus.map(_ => true)
+    })
+  }
   handleDelete(id) {
     const { onDelete, onDeleteFile } = this.props
 
@@ -122,6 +128,7 @@ class FormEdit extends React.Component {
     const imgTask = del(img.ref)
     const menuTasks = menus.map(m => del(m.img.ref))
 
+    this.setAllLoading()
     const ps = [imgTask, ...menuTasks]
     return Promise.all(ps).then(_ => onDelete(id))
   }
@@ -252,6 +259,7 @@ class FormEdit extends React.Component {
     const { form } = this.state
     const { errors, isValid } = validate(form)
     if (isValid) {
+      this.setAllLoading()
       onSubmit(form)
     }
     else {

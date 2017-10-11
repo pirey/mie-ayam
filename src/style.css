@@ -279,7 +279,7 @@ input:focus {
     background: rgba(0,0,0,.8);
 }
 .loader .fa-spin {
-    color: white;
+    color: rgba(255,255,255,.7);
 }
 .thumb-buttons {
     position: absolute;

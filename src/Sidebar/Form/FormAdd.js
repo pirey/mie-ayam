@@ -181,14 +181,17 @@ class FormAdd extends React.Component {
     const imgTask = uploadImg(img)
     const menuTasks = menus.map(uploadMenuImg)
 
+    this.setAllLoading()
     const ps = [imgTask, ...menuTasks]
-    this.setNState('loading', {
-      img: true,
-      menus: this.state.loading.menus.map(_ => true)
-    })
     return Promise.all(ps).then(_ => {
       // all the images should have their ref and src updated
       return this.state.form
+    })
+  }
+  setAllLoading() {
+    this.setNState('loading', {
+      img: true,
+      menus: this.state.loading.menus.map(_ => true)
     })
   }
   handleSubmit(e) {
